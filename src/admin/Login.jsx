@@ -14,7 +14,8 @@ const Login = ({ onLogin }) => {
         setError('');
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5005/api'}/auth/login`, {
+            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
+            const response = await axios.post(`${baseUrl}/auth/login`, {
                 username,
                 password
             });
@@ -25,7 +26,11 @@ const Login = ({ onLogin }) => {
             
             onLogin(token, user);
         } catch (err) {
-            setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
+            if (!err.response) {
+                setError('Network error: Unable to connect to the server. Please check your internet connection.');
+            } else {
+                setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
@@ -59,6 +64,9 @@ const Login = ({ onLogin }) => {
                             value={username} 
                             onChange={(e) => setUsername(e.target.value)} 
                             placeholder="Enter your username"
+                            autoCapitalize="none"
+                            autoCorrect="off"
+                            spellCheck="false"
                             required 
                         />
                     </div>
@@ -71,6 +79,9 @@ const Login = ({ onLogin }) => {
                                 value={password} 
                                 onChange={(e) => setPassword(e.target.value)} 
                                 placeholder="Enter your password"
+                                autoCapitalize="none"
+                                autoCorrect="off"
+                                spellCheck="false"
                                 required 
                             />
                             <button 
