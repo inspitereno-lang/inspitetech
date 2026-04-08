@@ -61,7 +61,7 @@ const Navbar = () => {
 
             {/* Mobile Nav Menu Overlay */}
             {mobileMenuOpen && (
-                <div className="mobile-nav-menu" style={{ display: 'flex' }}>
+                <div className="mobile-nav-menu active">
                     <NavLink to="/" className={({ isActive }) => isActive ? "active" : ""} onClick={handleLinkClick}>Home</NavLink>
                     <NavLink to="/about" className={({ isActive }) => isActive ? "active" : ""} onClick={handleLinkClick}>About</NavLink>
                     <NavLink to="/destinations" className={({ isActive }) => isActive ? "active" : ""} onClick={handleLinkClick}>Destinations</NavLink>
