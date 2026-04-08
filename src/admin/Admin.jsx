@@ -96,7 +96,7 @@ const Admin = () => {
                 <div className="admin-content-area">
                     <Routes>
                         {/* Default redirect to Home Page Management */}
-                        <Route index element={<Navigate to="home" replace />} />
+                        <Route index element={<Navigate to="/admin/home" replace />} />
                         
                         <Route path="home" element={<HomeEditor />} />
 
@@ -138,7 +138,7 @@ const Admin = () => {
                         <Route path="contact" element={<ContactEditor />} />
                         
                         {/* Fallback to Home Management */}
-                        <Route path="*" element={<Navigate to="home" replace />} />
+                        <Route path="*" element={<Navigate to="/admin/home" replace />} />
                     </Routes>
                 </div>
             </main>
