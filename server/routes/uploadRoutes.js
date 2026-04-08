@@ -1,0 +1,35 @@
+import express from 'express';
+import multer from 'multer';
+import cloudinary from '../config/cloudinary.js';
+
+const router = express.Router();
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+router.post('/', upload.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No image uploaded' });
+        }
+
+        // Convert buffer to base64
+        const b64 = Buffer.from(req.file.buffer).toString('base64');
+        const dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+
+        const result = await cloudinary.uploader.upload(dataURI, {
+            folder: 'almoued-travels',
+            resource_type: 'auto'
+        });
+
+        res.json({
+            url: result.secure_url,
+            public_id: result.public_id
+        });
+    } catch (error) {
+        console.error('Upload Error:', error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+export default router;

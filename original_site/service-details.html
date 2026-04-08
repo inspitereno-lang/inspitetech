@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service Details - Almoued Travel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="about.css" />
+  <link rel="stylesheet" href="details.css" /> <!-- New Premium Details Styles -->
+  <link rel="stylesheet" href="mobile-rectification.css" />
+</head>
+
+<body>
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress-container">
+    <div class="scroll-progress-bar"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="logo-container">
+        <a href="index.html">
+          <img src="./images/logo.png" alt="Almoued Travel" class="logo-image" />
+        </a>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="destinations.html" class="nav-link">Destinations</a></li>
+        <li><a href="services.html" class="nav-link active">Services</a></li>
+        <li><a href="packages.html" class="nav-link">Packages</a></li>
+        <li><a href="team.html" class="nav-link">Core Team</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Parallax Hero Section -->
+  <section class="page-hero">
+    <div class="page-hero-bg">
+      <img id="heroImage" src="" alt="Service Hero" style="opacity: 0; transition: opacity 0.5s ease;" />
+    </div>
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content">
+      <h1 id="serviceTitle"><span class="skeleton skeleton-title" style="width: 300px; display: inline-block;"></span>
+      </h1>
+      <p id="serviceSubtitle">
+        <span class="skeleton skeleton-text" style="width: 200px; display: inline-block;"></span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="service-body">
+    <div class="container">
+      <div class="service-layout">
+        <main class="service-main" data-aos="fade-up">
+          <h2 id="mainHeading"><span class="skeleton skeleton-title" style="width: 50%;"></span></h2>
+          <p id="serviceDescription">
+            <span class="skeleton skeleton-text"></span>
+            <span class="skeleton skeleton-text"></span>
+            <span class="skeleton skeleton-text" style="width: 80%;"></span>
+          </p>
+
+          <h3>Key Features</h3>
+          <div class="feature-list" id="featureList">
+            <!-- Features populated by JS -->
+          </div>
+
+          <!-- Global Visa Service Section (Hidden by default) -->
+          <div id="visa-section-container" style="display: none;" class="visa-section">
+            <div id="visa-grid-view">
+              <h3>Select a Country for Visa Requirements</h3>
+              <div class="visa-country-grid" id="visaCountryGrid">
+                <!-- Countries injected by JS -->
+              </div>
+            </div>
+
+            <div id="visa-detail-view" class="visa-detail-view">
+              <!-- Country Details injected by JS -->
+            </div>
+          </div>
+
+          <p id="serviceConclusion"></p>
+        </main>
+
+        <aside class="sidebar" data-aos="fade-left" data-aos-delay="200">
+          <div class="sidebar-widget contact-widget">
+            <h3>Need this Service?</h3>
+            <p>Contact us today for a personalized quote.</p>
+            <a href="contact.html" class="btn-primary">Book Now</a>
+          </div>
+
+          <div class="sidebar-widget">
+            <h4 class="widget-title">Other Services</h4>
+            <ul class="other-services-list">
+              <li><a href="service-details.html?service=visa">Global Visa Services</a></li>
+              <li><a href="service-details.html?service=air-tickets">Air Tickets</a></li>
+              <li><a href="service-details.html?service=hotels">Hotel Bookings</a></li>
+              <li><a href="service-details.html?service=holiday">Holiday Packages</a></li>
+              <li><a href="service-details.html?service=umrah">Umrah Assistance</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <!-- Logo Section -->
+        <div class="footer-section footer-logo-section">
+          <div class="footer-logo">
+            <img loading="lazy" src="./images/logo-white.png" alt="Almoued Travel Logo" class="footer-logo-image">
+
+          </div>
+
+          <!-- Social Links -->
+          <div class="social-links">
+            <a href="https://www.facebook.com/almouedtravel" target="_blank" rel="noopener noreferrer"
+              aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com/almouedtravel" target="_blank" rel="noopener noreferrer"
+              aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://twitter.com/almouedtravel" target="_blank" rel="noopener noreferrer"
+              aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.linkedin.com/company/almouedtravel" target="_blank" rel="noopener noreferrer"
+              aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://www.youtube.com/@almouedtravel" target="_blank" rel="noopener noreferrer"
+              aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="services.html">Services</a></li>
+            <li><a href="destinations.html">Destinations</a></li>
+            <li><a href="packages.html">Packages</a></li>
+            <li><a href="team.html">Core Team</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <!-- Our Services -->
+        <div class="footer-section">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="services.html">Air Tickets</a></li>
+            <li><a href="service-details.html?service=visa">Global Visa Services</a></li>
+            <li><a href="services.html">Hotel Bookings</a></li>
+            <li><a href="packages.html">Holiday Packages</a></li>
+            <li><a href="services.html">Umrah Assistance</a></li>
+            <li><a href="services.html">Corporate Travel</a></li>
+          </ul>
+        </div>
+
+        <!-- Legal & Support -->
+        <div class="footer-section">
+          <h4>Legal & Support</h4>
+          <ul>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms and Conditions</a></li>
+
+          </ul>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="footer-section footer-contact">
+          <h4>Contact Info</h4>
+          <div class="contact-info">
+            <div class="contact-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <p>Musaffah - Shabiya ME-11,<br>Abu Dhabi, UAE</p>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-phone"></i>
+              <p>+971 4 123 4567</p>
+            </div>
+            <div class="contact-item">
+              <i class="fas fa-envelope"></i>
+              <p>info@almouedtravel.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <div class="footer-bottom-content">
+          <p class="footer-copyright">&copy; 2024 Almoued Travel. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script>
+    AOS.init();
+
+    // Parallax Effect Logic
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const heroBg = document.querySelector('.page-hero-bg');
+      // Move slower than scroll for parallax
+      if (heroBg) heroBg.style.transform = `translateY(${scrolled * 0.4}px)`;
+    });
+
+    const servicesData = {
+      "air-tickets": {
+        title: "Air Tickets & Flight Booking",
+        subtitle: "Best fares for domestic and international flights",
+        image: "./images/airticket.jpg",
+        description:
+          "Fly to your dream destination with ease. We offer competitive airfares for all major airlines, ensuring you get the best route and price. Whether it's a last-minute business trip or a planned family vacation, our ticketing experts handle everything from booking to meal preferences.",
+        features: [
+          "Global Airline Partnerships",
+          "24/7 Booking Support",
+          "Competitive Corporate Rates",
+          "Meal & Seat Selection",
+        ],
+        conclusion:
+          "Let us handle your flight arrangements so you can start your journey stress-free.",
+      },
+      visa: {
+        title: "Global Visa Services",
+        subtitle: "Hassle-free visa processing for all major destinations",
+        image: "./images/visaservice.jpg",
+        description:
+          "Navigating visa requirements can be complex. Our experts provide end-to-end assistance for tourist, business, and student visas to countries like USA, UK, Canada, Europe (Schengen), and more. We review your documents to minimize rejection risks.",
+        features: [
+          "Document Verification & Filling",
+          "Embassy Appointment Scheduling",
+          "Real-time Application Tracking",
+          "High Success Rate Assistance",
+        ],
+        conclusion:
+          "Travel the world borders-free. We make the visa process simple, transparent, and efficient.",
+      },
+      // ... (rest of the object keys remain the same, just keeping the structure intact)
+      hotels: {
+        title: "Hotel Bookings",
+        subtitle: "Luxury stays and budget-friendly accommodations worldwide",
+        image: "./images/hotelbooking.jpg",
+        description:
+          "From 5-star luxury resorts to cozy boutique hotels, we provide accommodation options that suit your taste and budget. Enjoy exclusive deals, complimentary upgrades, and flexible cancellation policies through our global network of partners.",
+        features: [
+          "Instant Confirmation",
+          "Exclusive Member Discounts",
+          "Wide Range of Options",
+          "Flexible Cancellation Policies",
+        ],
+        conclusion:
+          "Rest easy knowing your accommodation is perfectly sorted before you even arrive.",
+      },
+      "euro-rail": {
+        title: "Euro Rail Bookings",
+        subtitle: "Explore Europe by train with ease",
+        image: "./images/eurorail.jpg",
+        description:
+          "Experience the breathtaking beauty of Europe through its extensive rail network. We book official Eurail passes and point-to-point tickets, offering you the freedom to hop between Paris, Rome, Swiss Alps, and more with scenic comfort.",
+        features: [
+          "Official Eurail Passes",
+          "High-Speed Train Reservations",
+          "Scenic Alpine Routes",
+          "Multi-Country Itineraries",
+        ],
+        conclusion:
+          "The best way to see Europe is on the rails. Let us get you on board.",
+      },
+      "group-tours": {
+        title: "Group Departures",
+        subtitle: "Join our curated group tours for shared experiences",
+        image: "./images/group.jpg",
+        description:
+          "Our fixed departure group tours are perfect for those who love to travel with company. Meticulously planned itineraries, expert tour managers, and all-inclusive packages make these tours popular for solo travelers and families alike.",
+        features: [
+          "Expert Indian/Arabic Tour Managers",
+          "All-Inclusive Packages (Meals+Stay)",
+          "Like-minded Traveler Community",
+          "Safe, Secure & Guided",
+        ],
+        conclusion:
+          "Make new friends and lifelong memories on our exciting group tours.",
+      },
+      "airport-assist": {
+        title: "Airport Assistance",
+        subtitle: "VIP Meet & Greet services for a smooth arrival/departure",
+        image: "./images/airportassistance.jpg",
+        description:
+          "Skip the long queues and enjoy a seamless airport experience. Our Marhaba/Ahlan meet and assist services cover fast-track immigration, porter service for your luggage, and exclusive lounge access to relax before your flight.",
+        features: [
+          "Fast-Track Immigration",
+          "Dedicated Porter Services",
+          "Premium Lounge Access",
+          "Personal Escort to Gate",
+        ],
+        conclusion:
+          "Start your trip like a VIP with our premium airport assistance services.",
+      },
+      mice: {
+        title: "MICE Services",
+        subtitle: "Meetings, Incentives, Conferences, and Exhibitions",
+        image: "./images/mice.jpg",
+        description:
+          "We specialize in organizing world-class corporate events, conferences, and incentive trips globally. From venue selection to logistics and gala dinners, we handle everything to ensure your business event is a roaring success.",
+        features: [
+          "Strategic Venue Selection",
+          "End-to-End Logistics Management",
+          "Team Building Activities",
+          "Custom Corporate Itineraries",
+        ],
+        conclusion:
+          "Elevate your corporate profile with our professional event management.",
+      },
+      insurance: {
+        title: "Travel Insurance",
+        subtitle: "Comprehensive protection for your travels",
+        image: "./images/privacy.jpeg",
+        description:
+          "Travel with absolute peace of mind. Our comprehensive travel insurance plans cover medical emergencies, trip cancellations, lost baggage, and flight delays, ensuring you are protected against the unexpected.",
+        features: [
+          "COVID-19 Medical Coverage",
+          "Trip Cancellation Protection",
+          "Lost Baggage Assistance",
+          "24/7 Global Emergency Assistance",
+        ],
+        conclusion: "Safety first. Ensure you are covered before you fly.",
+      },
+      passport: {
+        title: "Passport Assistance",
+        subtitle: "New passports and renewal services",
+        image: "./images/passportassistance.jpg",
+        description:
+          "We assist with new passport applications, renewals, and lost passport replacements. Our team guides you through the documentation, appointments, and submission process for various embassies.",
+        features: [
+          "Documentation Verification",
+          "Online Appointment Booking",
+          "Renewal & Reissue Services",
+          "Urgent Application Support",
+        ],
+        conclusion: "Your gateway to the world starts with a valid passport.",
+      },
+      umrah: {
+        title: "Umrah Assistance",
+        subtitle: "Spiritual journeys with complete peace of mind",
+        image: "./images/ummrah.jpeg",
+        description:
+          "Perform Umrah with ease and devotion. Our tailored packages include visa processing, direct flights, hotels near the Haram, and comfortable ground transport to ensure a spiritually fulfilling journey.",
+        features: [
+          "Umrah Visa Processing",
+          "Hotels close to Haram",
+          "Private/Shared Transportation",
+          "Ziyarat Tours included",
+        ],
+        conclusion:
+          "Focus on your prayers while we take care of the logistics.",
+      },
+      carrental: {
+        title: "Car Rental Services",
+        subtitle: "Drive your way through any destination",
+        image: "./images/carrental.jpg",
+        description:
+          "Rent a car anywhere in the world. From economy cars for city hops to luxury sedans for business, we offer reliable vehicle rental services with flexible pickup, drop-off, and insurance options.",
+        features: [
+          "Wide Fleet Selection",
+          "GPS & Child Seats Available",
+          "Unlimited Mileage Options",
+          "Full Insurance Coverage",
+        ],
+        conclusion: "Freedom to explore at your own pace, on your own terms.",
+      },
+      transfers: {
+        title: "Global Transfers",
+        subtitle: "Reliable airport-hotel transfers worldwide",
+        image: "./images/ab4.jpeg",
+        description:
+          "Arrive in style and comfort. We provide private and shared transfers from airports to hotels in over 100 countries. Reliable, safe, and pre-booked to save you from taxi queues.",
+        features: [
+          "Private Chauffeur Service",
+          "Shared Shuttle Options",
+          "Luxury Vehicle Fleet",
+          "24/7 Pickup Availability",
+        ],
+        conclusion:
+          "No more waiting for taxis. Your ride is ready when you are.",
+      },
+      holiday: {
+        title: "Holiday Packages",
+        subtitle: "Tailor-made holidays for families and couples",
+        image: "./images/packages.jpg",
+        description:
+          "Whether it is a romantic honeymoon, a fun-filled family vacation, or a solo adventure, we craft personalized holiday packages that suit your preferences and budget. Experience the world your way.",
+        features: [
+          "Customized Itineraries",
+          "Honeymoon Specials",
+          "Family Friendly Activities",
+          "Adventure & Leisure Tours",
+        ],
+        conclusion: "Your dream holiday, planned to perfection by experts.",
+      },
+      corporate: {
+        title: "Corporate Travel",
+        subtitle: "Business travel management solutions",
+        image: "./images/ab1.jpg",
+        description:
+          "We optimize your corporate travel with cost-effective solutions, policy compliance, and 24/7 support. Let us manage your business trips so you can focus on your meetings.",
+        features: [
+          "Cost Optimization Strategies",
+          "Travel Policy Compliance",
+          "Detailed Reporting & Analytics",
+          "Dedicated Account Manager",
+        ],
+        conclusion: "Focus on business, we handle the travel.",
+      },
+      attestation: {
+        title: "Document Attestation",
+        subtitle: "Certificate attestation and apostille services",
+        image: "./images/terms.jpeg",
+        description:
+          "We provide fast, secure, and reliable attestation services for educational, marriage, and birth certificates for use in UAE and other countries. We handle the bureaucracy for you.",
+        features: [
+          "Embassy & Consulate Attestation",
+          "MOFA Attestation Services",
+          "Apostille Services",
+          "Secure Document Handling",
+        ],
+        conclusion:
+          "Legally verify your documents with our trusted services.",
+      },
+      "private-jet": {
+        title: "Private Jet Booking",
+        subtitle: "Luxury air charter services",
+        image: "./images/privatejet.jpg",
+        description:
+          "Experience the ultimate in luxury, privacy, and convenience with our private jet charter services. Fly on your own schedule to any destination, bypassing commercial terminals.",
+        features: [
+          "Premium Jet Fleet Access",
+          "Complete Privacy & Security",
+          "Flexible On-Demand Scheduling",
+          "Gourmet Onboard Catering",
+        ],
+        conclusion: "Redefining luxury travel. Your jet awaits.",
+      },
+      "student-tours": {
+        title: "Student Tours",
+        subtitle: "Educational and fun trips for students",
+        image: "./images/studenttour.jpg",
+        description:
+          "We organize educational tours, industrial visits, and adventure camps for schools and colleges. We balance learning objectives with fun activities to create memorable experiences for students.",
+        features: [
+          "Educational & Industrial Itineraries",
+          "Safe & vetted Accommodations",
+          "Experienced Student Guides",
+          "Affordable Group Packages",
+        ],
+        conclusion: "Learning beyond the classroom, exploring the world.",
+      },
+      medical: {
+        title: "Medical Tourism",
+        subtitle: "Healthcare and Ayurveda packages",
+        image: "./images/medicaltourism.png",
+        description:
+          "Access world-class medical treatments and rejuvenating Ayurveda therapies. We assist with hospital appointments, medical visas, recovery stays, and post-treatment travel.",
+        features: [
+          "Top Hospital Partnerships",
+          "Ayurveda & Wellness Retreats",
+          "Medical Visa Support",
+          "Post-treatment Recovery Care",
+        ],
+        conclusion: "Your health and wellness, our top priority.",
+      },
+    };
+
+
+    const visaCountries = [
+      {
+        id: 'india',
+        name: 'India',
+        flag: './images/tajmahal.jpg',
+        requirements: [
+          'Original Passport with at least 6 months validity',
+          'Two recent passport size photographs (white background)',
+          'Visa Application Form duly filled and signed',
+          'Copy of Emirates ID',
+          'NOC from employer / Sponsor'
+        ],
+        images: ['./images/ab1.jpg', './images/ab3.jpg']
+      },
+      {
+        id: 'uk',
+        name: 'United Kingdom',
+        flag: './images/london.png',
+        requirements: ['Valid Passport', '6 months Bank Statements', 'Employment Proof/NOC', 'Accommodation Proof'],
+        images: ['./images/london.png']
+      },
+      {
+        id: 'usa',
+        name: 'USA',
+        flag: './images/newyork.jpeg',
+        requirements: ['DS-160 Confirmation Page', 'Appointment Confirmation', 'Valid Passport', '6 months Bank Statements'],
+        images: ['./images/newyork.jpeg']
+      },
+      {
+        id: 'schengen',
+        name: 'Schengen (Europe)',
+        flag: './images/paris.jpeg',
+        requirements: ['Visa Application Form', 'Flight Reservation', 'Hotel Booking', 'Travel Insurance', 'Bank Statements', 'NOC'],
+        images: ['./images/paris.jpeg']
+      },
+      {
+        id: 'uae',
+        name: 'UAE',
+        flag: './images/dubai.jpeg',
+        requirements: ['Clear Passport Copy', 'Passport Size Photo (White Background)'],
+        images: ['./images/dubai.jpeg']
+      },
+      {
+        id: 'singapore',
+        name: 'Singapore',
+        flag: './images/singapore.jpeg',
+        requirements: ['Form 14A', 'Passport Bio Page Copy', 'Passport Size Photo', 'Flight Booking', 'Hotel Booking'],
+        images: ['./images/singapore.jpeg']
+      },
+      {
+        id: 'japan',
+        name: 'Japan',
+        flag: './images/tokyo.jpeg',
+        requirements: ['Visa Application Form', 'Passport Size Photo', 'Daily Itinerary', '3 months Bank Statement', 'NOC'],
+        images: ['./images/tokyo.jpeg']
+      }
+    ];
+
+    function loadServiceDetails() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let serviceId = urlParams.get("service");
+
+      // Default to 'visa' if no service specified to ensure page looks good
+      if (!serviceId && !servicesData[serviceId]) {
+        serviceId = 'visa';
+        // Optional: Update URL without refresh
+        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?service=visa';
+        window.history.replaceState({ path: newUrl }, '', newUrl);
+      }
+
+      const data = servicesData[serviceId];
+
+      if (data) {
+        document.getElementById("serviceTitle").textContent = data.title;
+        document.getElementById("serviceSubtitle").textContent = data.subtitle;
+        document.getElementById("serviceDescription").textContent = data.description;
+        document.getElementById("mainHeading").textContent = data.title + " Overview";
+
+        // Handle Hero Image Fade-in
+        const heroImg = document.getElementById("heroImage");
+        heroImg.style.opacity = '0'; // Reset opacity
+        heroImg.onload = function () {
+          this.style.opacity = '1';
+        };
+        heroImg.src = data.image;
+
+        document.getElementById("serviceConclusion").textContent = data.conclusion;
+
+        // Handle Global Visa Service Special Case
+        if (serviceId === 'visa') {
+          // Hide standard features list and its heading
+          document.getElementById("featureList").style.display = "none";
+          // Find the H3 "Key Features" preceding the list and hide it
+          const h3Elements = document.querySelectorAll('.service-main h3');
+          h3Elements.forEach(h3 => {
+            if (h3.textContent.includes('Key Features')) h3.style.display = 'none';
+          });
+
+          // Show Visa Section
+          const visaContainer = document.getElementById("visa-section-container");
+          visaContainer.style.display = "block";
+          renderVisaCountries();
+
+        } else {
+          // Standard behavior
+          document.getElementById("featureList").style.display = "block";
+          const h3Elements = document.querySelectorAll('.service-main h3');
+          h3Elements.forEach(h3 => {
+            if (h3.textContent.includes('Key Features')) h3.style.display = 'block';
+          });
+          document.getElementById("visa-section-container").style.display = "none";
+
+          const featureList = document.getElementById("featureList");
+          featureList.innerHTML = data.features
+            .map(
+              (feature) => `
+                       <div class="feature-item">
+                           <i class="fas fa-check-circle feature-icon"></i>
+                           <span>${feature}</span>
+                       </div>
+                   `
+            )
+            .join("");
+        }
+
+      } else {
+        // Fallback if random invalid service ID entered
+        document.getElementById("serviceTitle").textContent = "Service Not Found";
+        document.getElementById("serviceSubtitle").textContent = "Please check the URL or return to Services page.";
+        document.getElementById("mainHeading").style.display = "none";
+        document.getElementById("heroImage").src = "./images/ab5.png"; // Fallback
+      }
+    }
+
+    function renderVisaCountries() {
+      const grid = document.getElementById("visaCountryGrid");
+      grid.innerHTML = visaCountries.map((country, index) => `
+            <div class="visa-country-card" style="animation-delay: ${index * 0.1}s" onclick="showCountryDetails('${country.id}')">
+                <img src="${country.flag}" alt="${country.name}" class="visa-country-flag">
+                <div class="visa-country-name">${country.name}</div>
+            </div>
+         `).join('');
+    }
+
+    function showCountryDetails(countryId) {
+      const country = visaCountries.find(c => c.id === countryId);
+      if (!country) return;
+
+      const gridView = document.getElementById("visa-grid-view");
+      const detailView = document.getElementById("visa-detail-view");
+
+      // Smooth transition
+      gridView.style.opacity = '0';
+      setTimeout(() => {
+        gridView.style.display = 'none';
+        detailView.style.display = 'block';
+        // Force reflow
+        void detailView.offsetWidth;
+        detailView.classList.add('active');
+
+        detailView.innerHTML = `
+                <div class="visa-detail-header">
+                    <h3>${country.name} Visa Requirements</h3>
+                    <button class="visa-back-btn" onclick="backToCountryList()">
+                        <i class="fas fa-arrow-left"></i> Back to Countries
+                    </button>
+                </div>
+
+                <p class="visa-brief">
+                    Get your ${country.name} visa approved quickly with our expert assistance. We handle all documentation and submission processes.
+                </p>
+
+                <ul class="visa-requirements-list">
+                    ${country.requirements.map((req, i) => `
+                        <li class="visa-requirement-item" style="animation: fadeInUp 0.5s ease forwards ${i * 0.1}s; opacity: 0; transform: translateY(10px);">
+                            <i class="fas fa-check-circle visa-requirement-icon"></i>
+                            <span>${req}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+
+                <div class="visa-images-grid">
+                     ${country.images.map((img, index) => `
+                        <div class="visa-image-item" data-aos="zoom-in" data-aos-delay="${index * 100}">
+                            <img src="${img}" alt="${country.name} Visa Image ${index + 1}">
+                        </div>
+                     `).join('')}
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                     <a href="contact.html" class="btn-primary" style="display: inline-block; padding: 12px 30px;">
+                        Request ${country.name} Visa
+                     </a>
+                </div>
+             `;
+
+        // Re-trigger AOS if available
+        if (typeof AOS !== 'undefined') AOS.refresh();
+      }, 300);
+    }
+
+    function backToCountryList() {
+      const gridView = document.getElementById("visa-grid-view");
+      const detailView = document.getElementById("visa-detail-view");
+
+      detailView.classList.remove('active');
+      setTimeout(() => {
+        detailView.style.display = 'none';
+        gridView.style.display = 'block';
+        // Force reflow
+        void gridView.offsetWidth;
+        gridView.style.opacity = '1';
+      }, 300);
+    }
+
+    window.onload = loadServiceDetails;
+  </script>
+</body>
+
+</html>
