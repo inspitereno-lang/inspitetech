@@ -14,6 +14,7 @@ const packageSchema = new mongoose.Schema({
     categoryTag: { type: String },
     priority: { type: Number, default: 0 },
     slug: { type: String, unique: true, sparse: true },
+    id: { type: String, unique: true, sparse: true },
     status: { type: String, enum: ['active', 'hidden'], default: 'active' },
     // Backwards compatibility
     features: [{ type: String }]
@@ -30,6 +31,10 @@ packageSchema.pre('save', async function() {
             .toLowerCase()
             .replace(/[^\w ]+/g, '')
             .replace(/ +/g, '-');
+    }
+    
+    if (this.slug) {
+        this.id = this.slug;
     }
 });
 

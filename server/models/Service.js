@@ -10,6 +10,7 @@ const serviceSchema = new mongoose.Schema({
     icon: { type: String, default: 'fa-concierge-bell' },
     priority: { type: Number, default: 0 },
     slug: { type: String, unique: true, sparse: true },
+    id: { type: String, unique: true, sparse: true },
     status: { type: String, enum: ['active', 'hidden'], default: 'active' }
 }, { timestamps: true });
 
@@ -20,6 +21,10 @@ serviceSchema.pre('save', async function() {
             .toLowerCase()
             .replace(/[^\w ]+/g, '')
             .replace(/ +/g, '-');
+    }
+    
+    if (this.slug) {
+        this.id = this.slug;
     }
 });
 

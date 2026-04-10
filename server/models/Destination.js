@@ -10,6 +10,7 @@ const destinationSchema = new mongoose.Schema({
     icon: { type: String, default: 'fa-map-marker-alt' },
     priority: { type: Number, default: 0 },
     slug: { type: String, unique: true, sparse: true },
+    id: { type: String, unique: true, sparse: true },
     status: { type: String, enum: ['active', 'hidden'], default: 'active' },
     // Backwards compatibility fields
     title: { type: String },
@@ -27,6 +28,11 @@ destinationSchema.pre('save', async function() {
             .toLowerCase()
             .replace(/[^\w ]+/g, '')
             .replace(/ +/g, '-');
+    }
+    
+    // Sync id with slug for MongoDB unique index compatibility
+    if (this.slug) {
+        this.id = this.slug;
     }
 });
 
