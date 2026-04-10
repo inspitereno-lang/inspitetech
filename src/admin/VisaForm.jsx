@@ -45,9 +45,25 @@ const VisaForm = () => {
         }
     };
 
+    const slugify = (text) => {
+        return text
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData(prev => {
+            const updated = { ...prev, [name]: value };
+            // Auto-generate slug (id) from name if we're creating a new entry
+            if (name === 'name' && !isEdit) {
+                updated.id = slugify(value);
+            }
+            return updated;
+        });
     };
 
     const handleArrayChange = (index, value, field) => {
@@ -108,31 +124,48 @@ const VisaForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // Validation
-        if (!formData.id || !formData.name || !formData.flag) {
-            return toast.error('Please fill in System Slug, Country Name, and Flag Image.', 'Missing Fields');
-        }
-
-        // Clean up empty strings in arrays
-        const cleanedData = {
+        // Create a copy of data for submission to ensure latest values and avoid state mutation issues
+        const submissionData = {
             ...formData,
             requirements: formData.requirements.filter(r => r.trim() !== ''),
             images: formData.images.filter(i => i.trim() !== '')
         };
 
+        // Validation
+        if (!submissionData.name || !submissionData.flag) {
+            return toast.error('Please fill in Country Name and Flag Image.', 'Missing Fields');
+        }
+
+        // Ensure ID (slug) is present
+        // If it's a new entry OR if the existing entry somehow has an empty/null ID
+        if (!submissionData.id || submissionData.id.trim() === '') {
+            submissionData.id = slugify(submissionData.name);
+        }
+
+        // Final Slug Validation
+        if (!submissionData.id) {
+            return toast.error('Could not generate a valid URL slug from the Country Name.', 'Slug Error');
+        }
+
         try {
             setSaving(true);
             if (isEdit) {
-                await updateVisaCountry(id, cleanedData);
+                await updateVisaCountry(id, submissionData);
                 toast.success('Visa requirements updated successfully!');
             } else {
-                await createVisaCountry(cleanedData);
+                await createVisaCountry(submissionData);
                 toast.success('New country added successfully!');
             }
             setTimeout(() => navigate('/admin/visa'), 1500);
         } catch (error) {
             console.error('Error saving country:', error);
-            toast.error(error.response?.data?.message || 'Failed to save requirements.', 'Save Error');
+            const serverMessage = error.response?.data?.message || '';
+            
+            if (serverMessage.includes('E11000') || serverMessage.includes('duplicate key')) {
+                toast.error('A country with this name or slug already exists.', 'Duplicate Error');
+            } else {
+                toast.error(serverMessage || 'Failed to save requirements.', 'Save Error');
+            }
         } finally {
             setSaving(false);
         }
@@ -165,19 +198,6 @@ const VisaForm = () => {
                                 onChange={handleChange} 
                                 className="admin-input"
                                 placeholder="0"
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label>System Slug (e.g., 'india')</label>
-                            <input 
-                                type="text" 
-                                name="id" 
-                                value={formData.id} 
-                                onChange={handleChange} 
-                                disabled={isEdit} 
-                                required 
-                                className="admin-input"
-                                placeholder="e.g. uk"
                             />
                         </div>
                         <div className="form-group">
