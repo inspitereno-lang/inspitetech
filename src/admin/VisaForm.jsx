@@ -352,11 +352,7 @@ const VisaForm = () => {
                         </button>
                     </div>
 
-                    {message && (
-                        <div className={`admin-notification ${message.includes('Failed') ? 'error' : 'success'}`}>
-                            {message}
-                        </div>
-                    )}
+
                 </form>
             </div>
         </div>
