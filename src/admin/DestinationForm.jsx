@@ -142,7 +142,10 @@ const DestinationForm = ({ item, onChange, onFileChange, uploading }) => {
                     placeholder="e.g. dubai-tour"
                     disabled={item._id} // Disable if editing existing item
                 />
-                <small style={{ color: '#888' }}>This will be used in the URL: /destinations/<b>{item.id || 'slug'}</b></small>
+                <small style={{ color: '#64748b', fontSize: '0.75rem', display: 'block', marginTop: '4px' }}>
+                    <i className="fas fa-magic" style={{ marginRight: '4px', color: '#ff8c00' }}></i>
+                    {item._id ? 'The slug is permanent once created.' : 'Auto-generated from name. Edit only if needed.'}
+                </small>
             </div>
         </div>
     );

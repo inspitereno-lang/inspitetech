@@ -46,10 +46,11 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
+        const { _id, __v, ...updateData } = req.body;
         const updatedPackage = await Package.findOneAndUpdate(
             { id: req.params.id },
-            req.body,
-            { new: true }
+            updateData,
+            { new: true, runValidators: true }
         );
         res.json(updatedPackage);
     } catch (error) {

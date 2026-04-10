@@ -46,10 +46,11 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
+        const { _id, __v, ...updateData } = req.body;
         const updatedService = await Service.findOneAndUpdate(
             { id: req.params.id },
-            req.body,
-            { new: true }
+            updateData,
+            { new: true, runValidators: true }
         );
         res.json(updatedService);
     } catch (error) {

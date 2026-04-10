@@ -116,7 +116,8 @@ const AdminEditor = ({ type, title }) => {
             fetchData();
         } catch (error) {
             console.error(`Error saving ${type}:`, error);
-            alert('Failed to save changes.');
+            const errorMessage = error.response?.data?.message || error.message || 'Failed to save changes.';
+            alert(`Error saving ${type}: ${errorMessage}`);
         }
     };
 
@@ -154,10 +155,31 @@ const AdminEditor = ({ type, title }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setEditingItem(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        
+        setEditingItem(prev => {
+            const updated = { ...prev, [name]: value };
+            
+            // Auto-slugify for new items
+            if (!prev._id && (name === 'name' || name === 'title')) {
+                // If id is empty or was previously auto-generated from the old name/title
+                const oldSlug = slugify(prev.name || prev.title || '');
+                if (!prev.id || prev.id === oldSlug) {
+                    updated.id = slugify(value);
+                }
+            }
+            
+            return updated;
+        });
+    };
+
+    const slugify = (text) => {
+        return text
+            .toString()
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')     // Replace spaces with -
+            .replace(/[^\w\-]+/g, '')  // Remove all non-word chars
+            .replace(/\-\-+/g, '-');   // Replace multiple - with single -
     };
 
     if (loading) return <div className="admin-loading">Loading {title}...</div>;

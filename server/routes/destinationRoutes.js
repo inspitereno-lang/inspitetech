@@ -48,10 +48,11 @@ router.post('/', async (req, res) => {
 // Update a destination
 router.put('/:id', async (req, res) => {
     try {
+        const { _id, __v, ...updateData } = req.body;
         const updatedDestination = await Destination.findOneAndUpdate(
             { id: req.params.id },
-            req.body,
-            { new: true }
+            updateData,
+            { new: true, runValidators: true }
         );
         res.json(updatedDestination);
     } catch (error) {
