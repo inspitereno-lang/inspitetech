@@ -103,15 +103,18 @@ const AdminEditor = ({ type, title }) => {
         
         // --- 1. Client Side Validation Check ---
         const titleOrName = editingItem.title || editingItem.name;
-        const hasImage = editingItem.image || editingItem.img;
-        const hasDescription = editingItem.description || editingItem.content;
+        const hasImage = editingItem.image || editingItem.img || editingItem.photoUrl;
+        
+        let missing = [];
+        if (!titleOrName) missing.push(type === 'destinations' || type === 'team' ? 'Name' : 'Title');
+        if (!hasImage) missing.push('Image');
+        
+        // Only require description for types other than team
+        if (type !== 'team' && !editingItem.description && !editingItem.content) {
+            missing.push('Description');
+        }
 
-        if (!titleOrName || !hasImage || !hasDescription) {
-            let missing = [];
-            if (!titleOrName) missing.push(type === 'destinations' || type === 'team' ? 'Name' : 'Title');
-            if (!hasImage) missing.push('Image');
-            if (!hasDescription) missing.push('Description');
-            
+        if (missing.length > 0) {
             return toast.error(`Missing Required Fields: ${missing.join(', ')}`, 'Validation Error');
         }
 
