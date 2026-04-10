@@ -48,7 +48,7 @@ const Destinations = () => {
                     {destinations.map((dest, index) => (
                         <Link 
                             key={dest._id || index} 
-                            to={`/destinations/${dest._id}`} 
+                            to={`/destinations/${dest.slug || dest._id}`} 
                             style={{ textDecoration: 'none' }}
                         >
                             <div className="service-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay={(index % 3) * 200}>

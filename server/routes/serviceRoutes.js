@@ -23,14 +23,26 @@ router.get('/active', async (req, res) => {
     }
 });
 
-// Get single service by ID
+// Get single service by ID or Slug
 router.get('/:id', async (req, res) => {
     try {
-        // Handle custom 'visa' ID or regular ObjectId
-        let query = { _id: req.params.id };
-        
-        // If it's a valid ObjectId, use findById, otherwise search by _id string or another field if needed
-        const service = await Service.findOne(query);
+        const { id } = req.params;
+        let service;
+
+        // Try to find by ID if it's a valid ObjectId
+        if (id.match(/^[0-9a-fA-F]{24}$/)) {
+            service = await Service.findById(id);
+        }
+
+        // If not found by ID (or it's not an ID), try finding by slug
+        if (!service) {
+            service = await Service.findOne({ slug: id });
+        }
+
+        // Backwards compatibility for the special 'visa' ID if used as a slug or ID
+        if (!service && id === 'visa') {
+            service = await Service.findOne({ title: /visa/i });
+        }
         
         if (!service) return res.status(404).json({ message: 'Service not found' });
         res.json(service);

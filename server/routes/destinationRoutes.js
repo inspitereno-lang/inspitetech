@@ -23,10 +23,22 @@ router.get('/active', async (req, res) => {
     }
 });
 
-// Get single destination by ID (Detail Page)
+// Get single destination by ID or Slug (Detail Page)
 router.get('/:id', async (req, res) => {
     try {
-        const destination = await Destination.findById(req.params.id);
+        const { id } = req.params;
+        let destination;
+
+        // Try to find by ID if it's a valid ObjectId
+        if (id.match(/^[0-9a-fA-F]{24}$/)) {
+            destination = await Destination.findById(id);
+        }
+
+        // If not found by ID, try finding by slug
+        if (!destination) {
+            destination = await Destination.findOne({ slug: id });
+        }
+
         if (!destination) return res.status(404).json({ message: 'Destination not found' });
         res.json(destination);
     } catch (error) {

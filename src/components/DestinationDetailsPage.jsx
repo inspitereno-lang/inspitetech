@@ -4,7 +4,7 @@ import AOS from 'aos';
 import api from '../api';
 
 const DestinationDetailsPage = () => {
-    const { id } = useParams();
+    const { slug } = useParams();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [others, setOthers] = useState([]);
@@ -13,12 +13,12 @@ const DestinationDetailsPage = () => {
         const fetchDestination = async () => {
             try {
                 setLoading(true);
-                const response = await api.get(`/destinations/${id}`);
+                const response = await api.get(`/destinations/${slug}`);
                 setData(response.data);
                 
                 // Fetch other destinations for sidebar
                 const othersResponse = await api.get('/destinations/active');
-                setOthers(othersResponse.data.filter(d => d.id !== id));
+                setOthers(othersResponse.data.filter(d => d.slug !== slug));
             } catch (error) {
                 console.error('Error fetching destination:', error);
             } finally {
@@ -28,7 +28,7 @@ const DestinationDetailsPage = () => {
 
         fetchDestination();
         window.scrollTo(0, 0);
-    }, [id]);
+    }, [slug]);
 
     useEffect(() => {
         if (!loading) {
@@ -39,7 +39,7 @@ const DestinationDetailsPage = () => {
     if (loading) return (
         <div style={{ paddingTop: '150px', textAlign: 'center', height: '100vh' }}>
             <div className="loader"></div>
-            <p>Exploring {id}...</p>
+            <p>Exploring your destination...</p>
         </div>
     );
 

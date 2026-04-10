@@ -4,7 +4,7 @@ const ServicesHero = () => {
     return (
         <section className="page-hero">
             <div className="page-hero-bg">
-                <img fetchpriority="high" src="/images/ab5.png" alt="Our Services" />
+                <img fetchPriority="high" src="/images/ab2.jpg" alt="Our Services" />
             </div>
             <div className="page-hero-overlay"></div>
             <div className="page-hero-content">

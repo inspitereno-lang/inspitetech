@@ -5,7 +5,7 @@ import api, { getVisaCountries } from '../api';
 import './ServiceDetailsPage/ServiceDetails.css';
 
 const ServiceDetailsPage = () => {
-    const { id } = useParams();
+    const { slug } = useParams();
     const navigate = useNavigate();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -17,25 +17,23 @@ const ServiceDetailsPage = () => {
     const [detailView, setDetailView] = useState(false);
 
     useEffect(() => {
-        // If no ID is provided, or if specifically requested as 'visa'
-        // Also support 'visa-services' which is used in some data files
-        const currentId = id || 'visa';
+        // Default slug if none provided (though route usually handles this)
+        const currentSlug = slug || 'visa';
 
         const fetchService = async () => {
             try {
                 setLoading(true);
-                const response = await api.get(`/services/${currentId}`);
+                const response = await api.get(`/services/${currentSlug}`);
                 setData(response.data);
 
                 // Fetch other services for sidebar
                 const othersResponse = await api.get('/services/active');
-                setOthers(othersResponse.data.filter(s => s.id !== currentId));
+                setOthers(othersResponse.data.filter(s => s.slug !== currentSlug && s._id !== data?._id));
 
                 // Fetch visa countries if this is the visa service
-                // Use a robust check: ID is 'visa', 'visa-services', OR the title contains 'Visa'
-                const isVisaService = currentId === 'visa' || 
-                                    currentId === 'visa-services' || 
-                                    (response.data?.title && response.data.title.toLowerCase().includes('visa'));
+                // Robust check: slug contains visa, OR title contains 'Visa'
+                const isVisaService = currentSlug.includes('visa') || 
+                                     (response.data?.title && response.data.title.toLowerCase().includes('visa'));
 
                 if (isVisaService) {
                     const visaResponse = await getVisaCountries();
@@ -43,10 +41,11 @@ const ServiceDetailsPage = () => {
                 }
             } catch (error) {
                 console.error('Error fetching service:', error);
-                if (currentId === 'visa') {
+                if (currentSlug.includes('visa')) {
                     // Critical fallback if visa service is missing from DB
                     setData({
                         title: 'Global Visa Services',
+                        slug: 'visa',
                         description: 'Navigating visa requirements can be complex. Our experts provide end-to-end assistance.',
                         image: '/images/ab2.jpg',
                         icon: 'fa-passport'
@@ -62,11 +61,11 @@ const ServiceDetailsPage = () => {
         setDetailView(false);
         window.scrollTo(0, 0);
 
-        // Update URL if we defaulted to visa
-        if (!id) {
+        // Update URL if we defaulted (rare with current routes)
+        if (!slug) {
             navigate('/services/visa', { replace: true });
         }
-    }, [id, navigate]);
+    }, [slug, navigate]);
 
     useEffect(() => {
         if (!loading) {
@@ -142,7 +141,7 @@ const ServiceDetailsPage = () => {
                                 </div>
                             )}
 
-                            {id === 'visa' || id === 'visa-services' || (data && data.title && data.title.toLowerCase().includes('visa')) ? (
+                            {slug === 'visa' || slug === 'visa-services' || (data && data.title && data.title.toLowerCase().includes('visa')) ? (
                                 <div className="visa-section-container">
                                     {!detailView ? (
                                         <div className="visa-grid-view">
@@ -266,8 +265,8 @@ const ServiceDetailsPage = () => {
                                 <h4 className="widget-title">Explore Other Services</h4>
                                 <ul className="other-services-list">
                                     {others.slice(0, 6).map(svc => (
-                                        <li key={svc.id}>
-                                            <Link to={`/services/${svc.id}`}>
+                                        <li key={svc._id}>
+                                            <Link to={`/services/${svc.slug || svc._id}`}>
                                                 <span>{svc.title}</span>
                                             </Link>
                                         </li>

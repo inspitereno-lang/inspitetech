@@ -89,11 +89,11 @@ function App() {
                         <Route path="/" element={<HomePage />} />
                         <Route path="/about" element={<AboutPage />} />
                         <Route path="/destinations" element={<DestinationsPage />} />
-                        <Route path="/destinations/:id" element={<DestinationDetailsPage />} />
+                        <Route path="/destinations/:slug" element={<DestinationDetailsPage />} />
                         <Route path="/services" element={<ServicesPage />} />
-                        <Route path="/services/:id" element={<ServiceDetailsPage />} />
+                        <Route path="/services/:slug" element={<ServiceDetailsPage />} />
                         <Route path="/packages" element={<PackagesPage />} />
-                        <Route path="/packages/:id" element={<PackageDetailsPage />} />
+                        <Route path="/packages/:slug" element={<PackageDetailsPage />} />
                         <Route path="/team" element={<TeamPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/admin/*" element={<Admin />} />

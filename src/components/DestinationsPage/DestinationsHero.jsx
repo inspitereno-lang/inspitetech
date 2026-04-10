@@ -4,7 +4,7 @@ const DestinationsHero = () => {
     return (
         <section className="page-hero">
             <div className="page-hero-bg">
-                <img fetchpriority="high" src="/images/ab4.jpeg" alt="Destinations" />
+                <img fetchPriority="high" src="/images/ab4.jpeg" alt="Destinations" />
             </div>
             <div className="page-hero-overlay"></div>
             <div className="page-hero-content">

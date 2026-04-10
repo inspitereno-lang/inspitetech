@@ -23,10 +23,22 @@ router.get('/active', async (req, res) => {
     }
 });
 
-// Get single package by ID
+// Get single package by ID or Slug
 router.get('/:id', async (req, res) => {
     try {
-        const tourPackage = await Package.findById(req.params.id);
+        const { id } = req.params;
+        let tourPackage;
+
+        // Try to find by ID if it's a valid ObjectId
+        if (id.match(/^[0-9a-fA-F]{24}$/)) {
+            tourPackage = await Package.findById(id);
+        }
+
+        // If not found by ID, try finding by slug
+        if (!tourPackage) {
+            tourPackage = await Package.findOne({ slug: id });
+        }
+
         if (!tourPackage) return res.status(404).json({ message: 'Package not found' });
         res.json(tourPackage);
     } catch (error) {

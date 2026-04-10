@@ -5,7 +5,7 @@ import api from '../api';
 import './ServiceDetailsPage/ServiceDetails.css';
 
 const PackageDetailsPage = () => {
-    const { id } = useParams();
+    const { slug } = useParams();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [others, setOthers] = useState([]);
@@ -14,12 +14,12 @@ const PackageDetailsPage = () => {
         const fetchPackage = async () => {
             try {
                 setLoading(true);
-                const response = await api.get(`/packages/${id}`);
+                const response = await api.get(`/packages/${slug}`);
                 setData(response.data);
                 
                 // Fetch other packages for sidebar
                 const othersResponse = await api.get('/packages/active');
-                setOthers(othersResponse.data.filter(p => p.id !== id));
+                setOthers(othersResponse.data.filter(p => p.slug !== slug && p._id !== data?._id));
             } catch (error) {
                 console.error('Error fetching package:', error);
             } finally {
@@ -29,7 +29,7 @@ const PackageDetailsPage = () => {
 
         fetchPackage();
         window.scrollTo(0, 0);
-    }, [id]);
+    }, [slug]);
 
     useEffect(() => {
         if (!loading) {
@@ -40,7 +40,7 @@ const PackageDetailsPage = () => {
     if (loading) return (
         <div style={{ paddingTop: '150px', textAlign: 'center', height: '100vh' }}>
             <div className="loader"></div>
-            <p>Preparing your journey to {id}...</p>
+            <p>Preparing your journey...</p>
         </div>
     );
 
@@ -129,7 +129,7 @@ const PackageDetailsPage = () => {
                                 <ul className="other-services-list">
                                     {others.map(pkg => (
                                         <li key={pkg._id}>
-                                            <Link to={`/packages/${pkg._id}`}>{pkg.title}</Link>
+                                            <Link to={`/packages/${pkg.slug || pkg._id}`}>{pkg.title}</Link>
                                         </li>
                                     ))}
                                 </ul>

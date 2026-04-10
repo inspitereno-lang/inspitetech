@@ -77,7 +77,7 @@ const Services = () => {
                             </div>
                             <span>{service.title}</span>
                             <div className="service-hover-effect"></div>
-                            <Link to={service._id ? `/services/${service._id}` : "/services"} className="service-card-link" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 5 }} aria-label={service.title}></Link>
+                            <Link to={service._id ? `/services/${service.slug || service._id}` : "/services"} className="service-card-link" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 5 }} aria-label={service.title}></Link>
                         </div>
                     ))}
                 </div>

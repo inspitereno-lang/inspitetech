@@ -4,7 +4,7 @@ const ContactHero = () => {
     return (
         <section className="page-hero">
             <div className="page-hero-bg">
-                <img id="contactHeroImg" fetchpriority="high" src="/images/contactus.jpg" alt="Contact Us" />
+                <img id="contactHeroImg" fetchPriority="high" src="/images/contactus.jpg" alt="Contact Us" />
             </div>
             <div className="page-hero-overlay"></div>
             <div className="page-hero-content" data-aos="fade-up" data-aos-duration="1000">

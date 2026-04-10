@@ -45,7 +45,7 @@ const PackagesGrid = () => {
                     {packages.map((pkg, index) => (
                         <Link 
                             key={pkg._id || index}
-                            to={`/packages/${pkg._id}`}
+                            to={`/packages/${pkg.slug || pkg._id}`}
                             className="service-card-premium"
                             data-aos="fade-up" 
                             data-aos-duration="800" 
