@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
+import { useToast } from '../context/ToastContext';
 
 const HomeEditor = () => {
+    const { toast } = useToast();
     const [settings, setSettings] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
     
     // Lists of all available items
     const [allData, setAllData] = useState({
@@ -33,6 +34,7 @@ const HomeEditor = () => {
                 });
             } catch (error) {
                 console.error('Error loading home editor data:', error);
+                toast.error('Failed to load page data. Please refresh.');
             } finally {
                 setLoading(false);
             }
@@ -44,16 +46,15 @@ const HomeEditor = () => {
         try {
             setSaving(true);
             await api.put('/home/settings', settings);
-            setShowSuccess(true);
-            // Auto hide after 3 seconds
-            setTimeout(() => setShowSuccess(false), 3000);
+            toast.success('Homepage settings updated successfully!');
         } catch (error) {
             console.error('Error saving settings:', error);
-            alert('Failed to save settings.');
+            toast.error('Failed to save settings. Please try again.');
         } finally {
             setSaving(false);
         }
     };
+
 
     const updateSection = (section, key, value) => {
         setSettings(prev => ({
@@ -330,49 +331,7 @@ const HomeEditor = () => {
             {renderSection('Packages', 'packages', allData.packages)}
             {renderSection('Services', 'services', allData.services)}
 
-            {/* Success Modal */}
-            {showSuccess && (
-                <div className="admin-modal-overlay" style={{ zIndex: 1100 }} onClick={() => setShowSuccess(false)}>
-                    <div className="admin-modal" style={{ 
-                        maxWidth: '400px', 
-                        width: '90%', 
-                        textAlign: 'center', 
-                        padding: '40px 30px',
-                        animation: 'modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
-                    }}>
-                        <div style={{ 
-                            width: '70px', 
-                            height: '70px', 
-                            background: '#dcfce7', 
-                            color: '#22c55e', 
-                            borderRadius: '20px', 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center', 
-                            margin: '0 auto 20px',
-                            fontSize: '2rem'
-                        }}>
-                            <i className="fas fa-circle-check"></i>
-                        </div>
-                        
-                        <h3 style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '10px' }}>
-                            Settings Saved!
-                        </h3>
-                        
-                        <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '25px', lineHeight: '1.6' }}>
-                            Your homepage has been successfully updated with the new order and featured items.
-                        </p>
 
-                        <button 
-                            className="admin-btn admin-btn-primary" 
-                            onClick={() => setShowSuccess(false)}
-                            style={{ width: '100%', padding: '12px' }}
-                        >
-                            Awesome!
-                        </button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

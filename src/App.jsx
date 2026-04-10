@@ -20,6 +20,8 @@ import PackageDetailsPage from './components/PackageDetailsPage';
 import TeamPage from './components/TeamPage';
 import ContactPage from './components/ContactPage';
 import Admin from './admin/Admin';
+import { ToastProvider } from './context/ToastContext';
+import { ToastContainer } from './components/Toast';
 
 
 function App() {
@@ -71,37 +73,40 @@ function App() {
     const isAdminPath = location.pathname.startsWith('/admin');
 
     return (
-        <div className="App">
-            {loading && <LoadingScreen />}
-            
-            <div className={`main-content ${loading ? 'hidden' : ''}`}>
-                <div className="scroll-progress-container">
-                    <div className="scroll-progress-bar" id="myBar"></div>
-                </div>
-
-                {!isAdminPath && <Navbar />}
+        <ToastProvider>
+            <div className="App">
+                <ToastContainer />
+                {loading && <LoadingScreen />}
                 
-                <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/destinations" element={<DestinationsPage />} />
-                    <Route path="/destinations/:id" element={<DestinationDetailsPage />} />
-                    <Route path="/services" element={<ServicesPage />} />
-                    <Route path="/services/:id" element={<ServiceDetailsPage />} />
-                    <Route path="/packages" element={<PackagesPage />} />
-                    <Route path="/packages/:id" element={<PackageDetailsPage />} />
-                    <Route path="/team" element={<TeamPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/admin/*" element={<Admin />} />
-                    {/* Fallback to Home */}
-                    <Route path="*" element={<HomePage />} />
-                </Routes>
+                <div className={`main-content ${loading ? 'hidden' : ''}`}>
+                    <div className="scroll-progress-container">
+                        <div className="scroll-progress-bar" id="myBar"></div>
+                    </div>
 
-                {!isAdminPath && <Footer />}
-                <BackToTop />
-                {!isAdminPath && <WhatsAppFloat />}
+                    {!isAdminPath && <Navbar />}
+                    
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/about" element={<AboutPage />} />
+                        <Route path="/destinations" element={<DestinationsPage />} />
+                        <Route path="/destinations/:id" element={<DestinationDetailsPage />} />
+                        <Route path="/services" element={<ServicesPage />} />
+                        <Route path="/services/:id" element={<ServiceDetailsPage />} />
+                        <Route path="/packages" element={<PackagesPage />} />
+                        <Route path="/packages/:id" element={<PackageDetailsPage />} />
+                        <Route path="/team" element={<TeamPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/admin/*" element={<Admin />} />
+                        {/* Fallback to Home */}
+                        <Route path="*" element={<HomePage />} />
+                    </Routes>
+
+                    {!isAdminPath && <Footer />}
+                    <BackToTop />
+                    {!isAdminPath && <WhatsAppFloat />}
+                </div>
             </div>
-        </div>
+        </ToastProvider>
     );
 }
 

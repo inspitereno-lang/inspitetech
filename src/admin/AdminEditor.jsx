@@ -4,8 +4,10 @@ import DestinationForm from './DestinationForm';
 import PackageForm from './PackageForm';
 import ServiceForm from './ServiceForm';
 import TeamForm from './TeamForm';
+import { useToast } from '../context/ToastContext';
 
 const AdminEditor = ({ type, title }) => {
+    const { toast } = useToast();
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingItem, setEditingItem] = useState(null);
@@ -13,7 +15,6 @@ const AdminEditor = ({ type, title }) => {
     const [uploading, setUploading] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     useEffect(() => {
         fetchData();
@@ -26,6 +27,7 @@ const AdminEditor = ({ type, title }) => {
             setItems(response.data);
         } catch (error) {
             console.error(`Error fetching ${type}:`, error);
+            toast.error(`Failed to load ${title}. Please refresh.`);
         } finally {
             setLoading(false);
         }
@@ -110,7 +112,7 @@ const AdminEditor = ({ type, title }) => {
             if (!hasImage) missing.push('Image');
             if (!hasDescription) missing.push('Description');
             
-            return alert(`Missing Required Fields: ${missing.join(', ')}. Please fill these out before saving.`);
+            return toast.error(`Missing Required Fields: ${missing.join(', ')}`, 'Validation Error');
         }
 
         try {
@@ -118,8 +120,10 @@ const AdminEditor = ({ type, title }) => {
             
             if (isNew) {
                 await api.post(`/${type}`, editingItem);
+                toast.success(`${title} item created successfully!`);
             } else {
                 await api.put(`/${type}/${editingItem._id}`, editingItem);
+                toast.success(`${title} item updated successfully!`);
             }
             setIsModalOpen(false);
             setEditingItem(null);
@@ -132,9 +136,9 @@ const AdminEditor = ({ type, title }) => {
             const status = error.response?.status;
             
             if (status === 400) {
-                alert(`Validation Error: ${serverMessage || 'Please check that all fields are correct.'}`);
+                toast.error(serverMessage || 'Please check that all fields are correct.', 'Validation Error');
             } else {
-                alert(`Error: ${serverMessage || 'Failed to save changes.'}`);
+                toast.error(serverMessage || 'Failed to save changes.', 'Server Error');
             }
         }
     };
@@ -150,15 +154,16 @@ const AdminEditor = ({ type, title }) => {
             setIsDeleting(true);
             await api.delete(`/${type}/${itemToDelete._id}`);
             setItemToDelete(null);
-            setShowSuccessModal(true);
+            toast.success('Item deleted successfully!');
             fetchData();
         } catch (error) {
             console.error(`Error deleting ${type}:`, error);
-            alert('Failed to delete item. Please try again.');
+            toast.error('Failed to delete item. Please try again.');
         } finally {
             setIsDeleting(false);
         }
     };
+
 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
@@ -174,7 +179,7 @@ const AdminEditor = ({ type, title }) => {
             }));
         } catch (error) {
             console.error('Upload failed:', error);
-            alert('Image upload failed. Check Cloudinary settings.');
+            toast.error('Image upload failed. Check Cloudinary settings.');
         } finally {
             setUploading(false);
         }
@@ -472,49 +477,7 @@ const AdminEditor = ({ type, title }) => {
                     </div>
                 </div>
             )}
-            {/* Success Modal */}
-            {showSuccessModal && (
-                <div className="admin-modal-overlay" style={{ zIndex: 1100 }} onClick={() => setShowSuccessModal(false)}>
-                    <div className="admin-modal" style={{ 
-                        maxWidth: '400px', 
-                        width: '90%', 
-                        textAlign: 'center', 
-                        padding: '40px 30px',
-                        animation: 'modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
-                    }}>
-                        <div style={{ 
-                            width: '70px', 
-                            height: '70px', 
-                            background: '#dcfce7', 
-                            color: '#22c55e', 
-                            borderRadius: '20px', 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center', 
-                            margin: '0 auto 20px',
-                            fontSize: '2rem'
-                        }}>
-                            <i className="fas fa-circle-check"></i>
-                        </div>
-                        
-                        <h3 style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '10px' }}>
-                            Deletion Successful!
-                        </h3>
-                        
-                        <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '25px', lineHeight: '1.6' }}>
-                            The item has been permanently removed from the system.
-                        </p>
- 
-                        <button 
-                            className="admin-btn admin-btn-primary" 
-                            onClick={() => setShowSuccessModal(false)}
-                            style={{ width: '100%', padding: '12px' }}
-                        >
-                            Got it!
-                        </button>
-                    </div>
-                </div>
-            )}
+
         </div>
     );
 };

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useToast } from '../context/ToastContext';
 
 const Login = ({ onLogin }) => {
+    const { toast } = useToast();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError('');
 
         try {
             const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5005/api';
@@ -24,17 +24,19 @@ const Login = ({ onLogin }) => {
             localStorage.setItem('adminToken', token);
             localStorage.setItem('adminUser', JSON.stringify(user));
             
+            toast.success(`Welcome back, ${user.username || 'Admin'}!`);
             onLogin(token, user);
         } catch (err) {
             if (!err.response) {
-                setError('Network error: Unable to connect to the server. Please check your internet connection.');
+                toast.error('Network error: Unable to connect to the server. Please check your internet connection.');
             } else {
-                setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
+                toast.error(err.response?.data?.message || 'Invalid credentials. Please try again.');
             }
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="login-page">
@@ -50,12 +52,7 @@ const Login = ({ onLogin }) => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="login-form">
-                    {error && (
-                        <div className="login-error">
-                            <i className="fas fa-circle-exclamation"></i>
-                            {error}
-                        </div>
-                    )}
+
                     
                     <div className="login-field">
                         <label><i className="fas fa-user"></i> Username</label>

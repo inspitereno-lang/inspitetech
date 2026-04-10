@@ -1,39 +1,35 @@
 import React, { useState } from 'react';
 import api from '../api';
+import { useToast } from '../context/ToastContext';
 
 const ContactEditor = () => {
+    const { toast } = useToast();
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState({ text: '', type: '' });
     const [showCurrent, setShowCurrent] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
-        setMessage({ text: '', type: '' });
 
         // Validation
         if (!currentPassword || !newPassword || !confirmPassword) {
-            setMessage({ text: 'Please fill in all fields', type: 'error' });
-            return;
+            return toast.error('Please fill in all fields', 'Validation Error');
         }
 
         if (newPassword.length < 4) {
-            setMessage({ text: 'New password must be at least 4 characters', type: 'error' });
-            return;
+            return toast.error('New password must be at least 4 characters', 'Validation Error');
         }
 
         if (newPassword !== confirmPassword) {
-            setMessage({ text: 'New passwords do not match', type: 'error' });
-            return;
+            return toast.error('New passwords do not match', 'Validation Error');
         }
 
         if (currentPassword === newPassword) {
-            setMessage({ text: 'New password must be different from current password', type: 'error' });
-            return;
+            return toast.error('New password must be different from current password', 'Validation Error');
         }
 
         try {
@@ -44,19 +40,17 @@ const ContactEditor = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             
-            setMessage({ text: 'Password changed successfully!', type: 'success' });
+            toast.success('Password changed successfully!');
             setCurrentPassword('');
             setNewPassword('');
             setConfirmPassword('');
         } catch (error) {
-            setMessage({ 
-                text: error.response?.data?.message || 'Failed to change password', 
-                type: 'error' 
-            });
+            toast.error(error.response?.data?.message || 'Failed to change password', 'Error');
         } finally {
             setSaving(false);
         }
     };
+
 
     return (
         <div className="admin-editor">
@@ -69,25 +63,7 @@ const ContactEditor = () => {
                 </div>
                 
                 <form onSubmit={handleChangePassword} style={{ padding: '28px' }}>
-                    {/* Status Message */}
-                    {message.text && (
-                        <div style={{ 
-                            padding: '12px 16px',
-                            borderRadius: '10px',
-                            marginBottom: '24px',
-                            fontSize: '0.85rem',
-                            fontWeight: '500',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            background: message.type === 'success' ? '#ecfdf5' : '#fef2f2',
-                            color: message.type === 'success' ? '#059669' : '#dc2626',
-                            border: `1px solid ${message.type === 'success' ? '#d1fae5' : '#fee2e2'}`
-                        }}>
-                            <i className={`fas ${message.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
-                            {message.text}
-                        </div>
-                    )}
+
 
                     {/* Current Password */}
                     <div className="admin-form-group">

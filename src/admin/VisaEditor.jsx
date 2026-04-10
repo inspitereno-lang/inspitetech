@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllVisaCountries, deleteVisaCountry } from '../api';
+import { useToast } from '../context/ToastContext';
 
 const VisaEditor = () => {
+    const { toast } = useToast();
     const [countries, setCountries] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [message, setMessage] = useState('');
     const [itemToDelete, setItemToDelete] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const VisaEditor = () => {
             setCountries(response.data);
         } catch (error) {
             console.error('Error fetching visa countries:', error);
-            setMessage('Failed to load visa requirements.');
+            toast.error('Failed to load visa requirements.');
         } finally {
             setLoading(false);
         }
@@ -36,14 +36,15 @@ const VisaEditor = () => {
             await deleteVisaCountry(itemToDelete._id);
             setCountries(countries.filter(c => c._id !== itemToDelete._id));
             setItemToDelete(null);
-            setShowSuccessModal(true);
+            toast.success('Visa requirements deleted successfully!');
         } catch (error) {
             console.error('Error deleting country:', error);
-            alert('Failed to delete country. Please try again.');
+            toast.error('Failed to delete country. Please try again.');
         } finally {
             setIsDeleting(false);
         }
     };
+
 
     if (loading) return <div className="admin-loading">Loading visa requirements...</div>;
 
@@ -69,7 +70,7 @@ const VisaEditor = () => {
                     </button>
                 </div>
 
-                {message && <div className={`admin-alert ${message.includes('Failed') ? 'error' : 'success'}`}>{message}</div>}
+
 
                 <div className="admin-table-container">
                     <table className="admin-table">
@@ -184,49 +185,7 @@ const VisaEditor = () => {
                 </div>
             )}
 
-            {/* Success Modal */}
-            {showSuccessModal && (
-                <div className="admin-modal-overlay" style={{ zIndex: 1100 }} onClick={() => setShowSuccessModal(false)}>
-                    <div className="admin-modal" style={{ 
-                        maxWidth: '400px', 
-                        width: '90%', 
-                        textAlign: 'center', 
-                        padding: '40px 30px',
-                        animation: 'modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
-                    }}>
-                        <div style={{ 
-                            width: '70px', 
-                            height: '70px', 
-                            background: '#dcfce7', 
-                            color: '#22c55e', 
-                            borderRadius: '20px', 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center', 
-                            margin: '0 auto 20px',
-                            fontSize: '2rem'
-                        }}>
-                            <i className="fas fa-circle-check"></i>
-                        </div>
-                        
-                        <h3 style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '10px' }}>
-                            Deletion Successful!
-                        </h3>
-                        
-                        <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '25px', lineHeight: '1.6' }}>
-                            The visa requirements for this country have been removed.
-                        </p>
 
-                        <button 
-                            className="admin-btn admin-btn-primary" 
-                            onClick={() => setShowSuccessModal(false)}
-                            style={{ width: '100%', padding: '12px' }}
-                        >
-                            Great!
-                        </button>
-                    </div>
-                </div>
-            )}
         </>
     );
 };

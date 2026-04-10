@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getVisaCountry, createVisaCountry, updateVisaCountry, uploadImage } from '../api';
+import { useToast } from '../context/ToastContext';
 
 const VisaForm = () => {
+    const { toast } = useToast();
     const { id } = useParams();
     const navigate = useNavigate();
     const isEdit = Boolean(id);
@@ -21,7 +23,6 @@ const VisaForm = () => {
     
     const [loading, setLoading] = useState(isEdit);
     const [saving, setSaving] = useState(false);
-    const [message, setMessage] = useState('');
     const [uploadingFlag, setUploadingFlag] = useState(false);
     const [uploadingGallery, setUploadingGallery] = useState(false);
 
@@ -33,11 +34,12 @@ const VisaForm = () => {
 
     const fetchCountryDetails = async () => {
         try {
+            setLoading(false); // Optimistic, but actually we set it true initially
             const response = await getVisaCountry(id);
             setFormData(response.data);
         } catch (error) {
             console.error('Error fetching country:', error);
-            setMessage('Failed to load country details.');
+            toast.error('Failed to load country details.');
         } finally {
             setLoading(false);
         }
@@ -71,9 +73,10 @@ const VisaForm = () => {
             setUploadingFlag(true);
             const data = await uploadImage(file);
             setFormData(prev => ({ ...prev, flag: data.url }));
+            toast.success('Flag uploaded successfully!');
         } catch (error) {
             console.error('Upload failed:', error);
-            alert('Image upload failed. Please try again.');
+            toast.error('Image upload failed. Please try again.');
         } finally {
             setUploadingFlag(false);
         }
@@ -93,9 +96,10 @@ const VisaForm = () => {
                 ...prev,
                 images: [...prev.images.filter(url => url !== ''), ...newUrls]
             }));
+            toast.success(`Successfully uploaded ${newUrls.length} images.`);
         } catch (error) {
             console.error('Gallery upload failed:', error);
-            alert('Some images failed to upload.');
+            toast.error('Some images failed to upload.');
         } finally {
             setUploadingGallery(false);
         }
@@ -104,6 +108,11 @@ const VisaForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
+        // Validation
+        if (!formData.id || !formData.name || !formData.flag) {
+            return toast.error('Please fill in System Slug, Country Name, and Flag Image.', 'Missing Fields');
+        }
+
         // Clean up empty strings in arrays
         const cleanedData = {
             ...formData,
@@ -115,19 +124,20 @@ const VisaForm = () => {
             setSaving(true);
             if (isEdit) {
                 await updateVisaCountry(id, cleanedData);
-                setMessage('Requirements updated successfully!');
+                toast.success('Visa requirements updated successfully!');
             } else {
                 await createVisaCountry(cleanedData);
-                setMessage('Country added successfully!');
+                toast.success('New country added successfully!');
             }
             setTimeout(() => navigate('/admin/visa'), 1500);
         } catch (error) {
             console.error('Error saving country:', error);
-            setMessage('Failed to save requirements. Make sure ID is unique.');
+            toast.error(error.response?.data?.message || 'Failed to save requirements.', 'Save Error');
         } finally {
             setSaving(false);
         }
     };
+
 
     if (loading) return <div className="admin-loading">Loading...</div>;
 
