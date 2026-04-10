@@ -45,7 +45,7 @@ const Packages = () => {
                     {packages.map((pkg, index) => (
                         <Link 
                             key={pkg._id || index} 
-                            to={`/packages/${pkg.id}`}
+                            to={`/packages/${pkg._id}`}
                             style={{ textDecoration: 'none' }}
                         >
                             <div className="service-card" data-aos="fade-up" data-aos-duration="800" data-aos-delay={(index % 3) * 200}>

@@ -128,8 +128,8 @@ const PackageDetailsPage = () => {
                                 <h4 className="widget-title">Other Packages</h4>
                                 <ul className="other-services-list">
                                     {others.map(pkg => (
-                                        <li key={pkg.id}>
-                                            <Link to={`/packages/${pkg.id}`}>{pkg.title}</Link>
+                                        <li key={pkg._id}>
+                                            <Link to={`/packages/${pkg._id}`}>{pkg.title}</Link>
                                         </li>
                                     ))}
                                 </ul>

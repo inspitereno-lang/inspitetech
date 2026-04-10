@@ -10,7 +10,7 @@ const ServiceDetailsPage = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [others, setOthers] = useState([]);
-    
+
     // Visa specific states
     const [visaCountries, setVisaCountries] = useState([]);
     const [selectedCountry, setSelectedCountry] = useState(null);
@@ -18,20 +18,26 @@ const ServiceDetailsPage = () => {
 
     useEffect(() => {
         // If no ID is provided, or if specifically requested as 'visa'
+        // Also support 'visa-services' which is used in some data files
         const currentId = id || 'visa';
-        
+
         const fetchService = async () => {
             try {
                 setLoading(true);
                 const response = await api.get(`/services/${currentId}`);
                 setData(response.data);
-                
+
                 // Fetch other services for sidebar
                 const othersResponse = await api.get('/services/active');
                 setOthers(othersResponse.data.filter(s => s.id !== currentId));
 
                 // Fetch visa countries if this is the visa service
-                if (currentId === 'visa') {
+                // Use a robust check: ID is 'visa', 'visa-services', OR the title contains 'Visa'
+                const isVisaService = currentId === 'visa' || 
+                                    currentId === 'visa-services' || 
+                                    (response.data?.title && response.data.title.toLowerCase().includes('visa'));
+
+                if (isVisaService) {
                     const visaResponse = await getVisaCountries();
                     setVisaCountries(visaResponse.data);
                 }
@@ -129,22 +135,22 @@ const ServiceDetailsPage = () => {
                                 </Link>
                             </div>
                             <h2>{data.title} <span className="highlight">Overview</span></h2>
-                            
+
                             {!detailView && (
                                 <div className="description">
                                     <p>{data.description}</p>
                                 </div>
                             )}
 
-                            {id === 'visa' || (!id && data.id === 'visa') ? (
+                            {id === 'visa' || id === 'visa-services' || (data && data.title && data.title.toLowerCase().includes('visa')) ? (
                                 <div className="visa-section-container">
                                     {!detailView ? (
                                         <div className="visa-grid-view">
                                             <h3 className="section-small-title">Select a Country for Visa Requirements</h3>
                                             <div className="visa-country-grid">
                                                 {visaCountries.map((country, index) => (
-                                                    <div 
-                                                        key={country.id} 
+                                                    <div
+                                                        key={country._id}
                                                         className="visa-country-card"
                                                         data-aos="fade-up"
                                                         data-aos-delay={index * 50}
@@ -182,8 +188,8 @@ const ServiceDetailsPage = () => {
                                                     <h4>Required Documents</h4>
                                                     <ul className="visa-requirements-list">
                                                         {selectedCountry.requirements.map((req, i) => (
-                                                            <li 
-                                                                key={i} 
+                                                            <li
+                                                                key={i}
                                                                 className="visa-requirement-item"
                                                             >
                                                                 <i className="fas fa-circle-check visa-requirement-icon"></i>
@@ -205,7 +211,7 @@ const ServiceDetailsPage = () => {
                                                         </div>
                                                     </div>
                                                 )}
-                                                
+
                                                 <div className="visa-action-box">
                                                     <Link to="/contact" className="btn-primary premium-btn">
                                                         <span>Apply for {selectedCountry.name} Visa</span>
@@ -234,7 +240,7 @@ const ServiceDetailsPage = () => {
                                             </div>
                                         </div>
                                     )}
-                                    
+
                                     {data.conclusion && (
                                         <div className="conclusion-box" data-aos="fade-up">
                                             <p className="conclusion">{data.conclusion}</p>

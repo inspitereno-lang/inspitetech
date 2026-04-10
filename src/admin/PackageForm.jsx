@@ -59,6 +59,17 @@ const PackageForm = ({ item, onChange, onFileChange, uploading }) => {
                     />
                 </div>
                 <div className="admin-form-group">
+                    <label>Display Priority (Lower = First)</label>
+                    <input 
+                        type="number"
+                        className="admin-input"
+                        name="priority"
+                        value={item.priority || 0}
+                        onChange={onChange}
+                        placeholder="0"
+                    />
+                </div>
+                <div className="admin-form-group">
                     <label>Status</label>
                     <select 
                         className="admin-input"
@@ -103,10 +114,10 @@ const PackageForm = ({ item, onChange, onFileChange, uploading }) => {
                 <label>Hero Image</label>
                 <div style={{ display: 'flex', gap: '15px', alignItems: 'center', marginBottom: '10px' }}>
                     <img 
-                        src={item.image} 
+                        src={item.image || 'https://placehold.co/120x70/e8ecf1/94a3b8?text=Placeholder'} 
                         alt="Preview" 
                         style={{ width: '120px', height: '70px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #ddd' }}
-                        onError={(e) => e.target.src='https://placehold.co/120x70/lightgray/gray?text=No+Img'}
+                        onError={(e) => e.target.src='https://placehold.co/120x70/e8ecf1/94a3b8?text=Placeholder'}
                     />
                     <input 
                         type="file" 
@@ -160,22 +171,6 @@ const PackageForm = ({ item, onChange, onFileChange, uploading }) => {
                 </button>
             </div>
             
-            <div className="admin-form-group">
-                <label>Package ID / URL Slug</label>
-                <input 
-                    className="admin-input"
-                    name="id"
-                    value={item.id || ''}
-                    onChange={onChange}
-                    required
-                    placeholder="e.g. european-discovery"
-                    disabled={item._id}
-                />
-                <small style={{ color: '#64748b', fontSize: '0.75rem', display: 'block', marginTop: '4px' }}>
-                    <i className="fas fa-magic" style={{ marginRight: '4px', color: '#ff8c00' }}></i>
-                    {item._id ? 'The slug is permanent once created.' : 'Auto-generated from title. Edit only if needed.'}
-                </small>
-            </div>
         </div>
     );
 };

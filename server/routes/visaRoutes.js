@@ -6,7 +6,7 @@ const router = express.Router();
 // Get all visa countries (Admin)
 router.get('/', async (req, res) => {
     try {
-        const countries = await VisaCountry.find().sort({ name: 1 });
+        const countries = await VisaCountry.find().sort({ priority: 1, name: 1 });
         res.json(countries);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 // Get only active visa countries (Public)
 router.get('/active', async (req, res) => {
     try {
-        const countries = await VisaCountry.find({ status: 'active' }).sort({ name: 1 });
+        const countries = await VisaCountry.find({ status: 'active' }).sort({ priority: 1, name: 1 });
         res.json(countries);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -26,7 +26,7 @@ router.get('/active', async (req, res) => {
 // Get single visa country
 router.get('/:id', async (req, res) => {
     try {
-        const country = await VisaCountry.findOne({ id: req.params.id });
+        const country = await VisaCountry.findById(req.params.id);
         if (!country) return res.status(404).json({ message: 'Country not found' });
         res.json(country);
     } catch (error) {
@@ -48,10 +48,11 @@ router.post('/', async (req, res) => {
 // Update visa country
 router.put('/:id', async (req, res) => {
     try {
-        const updatedCountry = await VisaCountry.findOneAndUpdate(
-            { id: req.params.id },
-            req.body,
-            { new: true }
+        const { _id, __v, ...updateData } = req.body;
+        const updatedCountry = await VisaCountry.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            { new: true, runValidators: true }
         );
         res.json(updatedCountry);
     } catch (error) {
@@ -62,7 +63,7 @@ router.put('/:id', async (req, res) => {
 // Delete visa country
 router.delete('/:id', async (req, res) => {
     try {
-        await VisaCountry.findOneAndDelete({ id: req.params.id });
+        await VisaCountry.findByIdAndDelete(req.params.id);
         res.json({ message: 'Country deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });

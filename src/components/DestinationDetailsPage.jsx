@@ -130,8 +130,8 @@ const DestinationDetailsPage = () => {
                                 <h4 className="widget-title">Other Destinations</h4>
                                 <ul className="other-services-list">
                                     {others.map(dest => (
-                                        <li key={dest.id}>
-                                            <Link to={`/destinations/${dest.id}`}>{dest.name}</Link>
+                                        <li key={dest._id}>
+                                            <Link to={`/destinations/${dest._id}`}>{dest.name}</Link>
                                         </li>
                                     ))}
                                 </ul>

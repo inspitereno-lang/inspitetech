@@ -44,8 +44,8 @@ const ServicesGrid = () => {
                 <div className="services-grid">
                     {services.map((service, index) => (
                         <Link 
-                            key={service.id || index} 
-                            to={`/services/${service.id}`}
+                            key={service._id || index} 
+                            to={`/services/${service._id}`}
                             className="service-card-premium"
                             data-aos="fade-up" 
                             data-aos-duration="800" 

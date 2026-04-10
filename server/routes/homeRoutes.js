@@ -75,8 +75,8 @@ router.get('/content', async (req, res) => {
                     (item._id && item._id.toString() === id)
                 ))).filter(Boolean);
             } else {
-                // Fallback: fetch latest active items if none selected
-                items = await Model.find({ status: 'active' }).limit(limit);
+                // Fallback: fetch latest active items if none selected, sorted by priority + alphabetical
+                items = await Model.find({ status: 'active' }).sort({ priority: 1, title: 1, name: 1 }).limit(limit);
             }
             
             return items.slice(0, limit);

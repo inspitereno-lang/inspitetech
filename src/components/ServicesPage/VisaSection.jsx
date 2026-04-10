@@ -24,7 +24,7 @@ const VisaSection = () => {
                     <div className="visa-country-grid">
                         {visaCountries.map((country, index) => (
                             <div 
-                                key={country.id} 
+                                key={country._id} 
                                 className="visa-country-card" 
                                 style={{ animationDelay: `${index * 0.1}s` }}
                                 onClick={() => handleCountryClick(country)}

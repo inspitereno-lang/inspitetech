@@ -61,14 +61,14 @@ const TeamForm = ({ item, onChange, onFileChange, uploading }) => {
 
             <div className="admin-form-row">
                 <div className="admin-form-group">
-                    <label>Display Order</label>
+                    <label>Display Priority (Lower = First)</label>
                     <input 
                         type="number"
                         className="admin-input"
-                        name="order"
-                        value={item.order || 0}
+                        name="priority"
+                        value={item.priority || 0}
                         onChange={onChange}
-                        placeholder="Higher numbers show later"
+                        placeholder="0"
                     />
                 </div>
             </div>

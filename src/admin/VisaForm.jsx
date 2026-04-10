@@ -147,7 +147,18 @@ const VisaForm = () => {
                 <form onSubmit={handleSubmit} className="admin-form">
                     <div className="form-grid">
                         <div className="form-group">
-                            <label>Country ID (slug, e.g., 'india')</label>
+                            <label>Display Priority (Lower = First)</label>
+                            <input 
+                                type="number" 
+                                name="priority" 
+                                value={formData.priority || 0} 
+                                onChange={handleChange} 
+                                className="admin-input"
+                                placeholder="0"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>System Slug (e.g., 'india')</label>
                             <input 
                                 type="text" 
                                 name="id" 

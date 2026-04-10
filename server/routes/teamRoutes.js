@@ -6,7 +6,7 @@ const router = express.Router();
 // Get all team members
 router.get('/', async (req, res) => {
     try {
-        const members = await TeamMember.find().sort({ order: 1 });
+        const members = await TeamMember.find().sort({ priority: 1, name: 1 });
         res.json(members);
     } catch (error) {
         res.status(500).json({ message: error.message });

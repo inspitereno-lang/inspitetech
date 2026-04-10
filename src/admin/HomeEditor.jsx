@@ -5,6 +5,7 @@ const HomeEditor = () => {
     const [settings, setSettings] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     
     // Lists of all available items
     const [allData, setAllData] = useState({
@@ -43,7 +44,9 @@ const HomeEditor = () => {
         try {
             setSaving(true);
             await api.put('/home/settings', settings);
-            alert('Home settings saved successfully!');
+            setShowSuccess(true);
+            // Auto hide after 3 seconds
+            setTimeout(() => setShowSuccess(false), 3000);
         } catch (error) {
             console.error('Error saving settings:', error);
             alert('Failed to save settings.');
@@ -64,11 +67,21 @@ const HomeEditor = () => {
 
     const toggleItem = (section, id) => {
         const currentItems = settings[section].items || [];
-        const isSelected = currentItems.includes(id);
         
-        const newItems = isSelected 
-            ? currentItems.filter(i => i !== id)
-            : [...currentItems, id];
+        // Find if this specific ID (or its legacy slug equivalent) is selected
+        const item = allData[section].find(it => it._id === id);
+        const legacySlug = item?.id;
+        
+        const isSelected = currentItems.some(i => i === id || (legacySlug && i === legacySlug));
+        
+        let newItems;
+        if (isSelected) {
+            // Remove both the ID and the legacy slug to be sure
+            newItems = currentItems.filter(i => i !== id && i !== legacySlug);
+        } else {
+            // Add the new ID
+            newItems = [...currentItems, id];
+        }
             
         updateSection(section, 'items', newItems);
     };
@@ -81,6 +94,16 @@ const HomeEditor = () => {
             [items[index], items[newIndex]] = [items[newIndex], items[index]];
             updateSection(section, 'items', items);
         }
+    };
+
+    const removeItem = (section, id) => {
+        const items = [...settings[section].items];
+        // Filter out both the ID and its legacy slug just to be safe
+        const item = allData[section].find(it => it._id === id);
+        const legacySlug = item?.id;
+        
+        const newItems = items.filter(i => i !== id && i !== legacySlug);
+        updateSection(section, 'items', newItems);
     };
 
     if (loading) return <div className="admin-loading">Loading Home Page Manager...</div>;
@@ -148,8 +171,8 @@ const HomeEditor = () => {
                         </h4>
                         <div style={{ maxHeight: '360px', overflowY: 'auto', borderRadius: '10px', border: '1px solid #e8ecf1', padding: '8px' }}>
                             {data.map(item => {
-                                const itemId = item.id || item._id;
-                                const isSelected = selectedIds.includes(itemId);
+                                const itemId = item._id;
+                                const isSelected = selectedIds.some(id => id === itemId || id === item.id);
                                 return (
                                     <div 
                                         key={itemId} 
@@ -192,10 +215,15 @@ const HomeEditor = () => {
                                 </div>
                             ) : (
                                 selectedIds.map((id, index) => {
-                                    const item = data.find(it => (it.id === id || it._id.toString() === id));
+                                    // Try matching by _id first, then by legacy slug 'id'
+                                    const item = data.find(it => it._id === id || it.id === id);
+                                    
+                                    // If we find an item but the ID in the list was a slug, 
+                                    // we still show it, but clicking Save will eventually 
+                                    // migrate the list to pure _ids.
                                     return (
                                         <div 
-                                            key={id} 
+                                            key={id + index} 
                                             style={{ 
                                                 padding: '10px 12px', 
                                                 marginBottom: '6px', 
@@ -232,6 +260,7 @@ const HomeEditor = () => {
                                                     style={{ width: '28px', height: '28px', fontSize: '0.7rem' }}
                                                     onClick={() => moveItem(key, index, 'up')}
                                                     disabled={index === 0}
+                                                    title="Move Up"
                                                 >
                                                     <i className="fas fa-chevron-up"></i>
                                                 </button>
@@ -240,8 +269,17 @@ const HomeEditor = () => {
                                                     style={{ width: '28px', height: '28px', fontSize: '0.7rem' }}
                                                     onClick={() => moveItem(key, index, 'down')}
                                                     disabled={index === selectedIds.length - 1}
+                                                    title="Move Down"
                                                 >
                                                     <i className="fas fa-chevron-down"></i>
+                                                </button>
+                                                <button 
+                                                    className="admin-btn-icon" 
+                                                    style={{ width: '28px', height: '28px', fontSize: '0.7rem', color: '#ef4444', backgroundColor: '#fee2e2' }}
+                                                    onClick={() => removeItem(key, id)}
+                                                    title="Remove from Homepage"
+                                                >
+                                                    <i className="fas fa-xmark"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -291,6 +329,50 @@ const HomeEditor = () => {
             {renderSection('Destinations', 'destinations', allData.destinations)}
             {renderSection('Packages', 'packages', allData.packages)}
             {renderSection('Services', 'services', allData.services)}
+
+            {/* Success Modal */}
+            {showSuccess && (
+                <div className="admin-modal-overlay" style={{ zIndex: 1100 }} onClick={() => setShowSuccess(false)}>
+                    <div className="admin-modal" style={{ 
+                        maxWidth: '400px', 
+                        width: '90%', 
+                        textAlign: 'center', 
+                        padding: '40px 30px',
+                        animation: 'modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                    }}>
+                        <div style={{ 
+                            width: '70px', 
+                            height: '70px', 
+                            background: '#dcfce7', 
+                            color: '#22c55e', 
+                            borderRadius: '20px', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            margin: '0 auto 20px',
+                            fontSize: '2rem'
+                        }}>
+                            <i className="fas fa-circle-check"></i>
+                        </div>
+                        
+                        <h3 style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '10px' }}>
+                            Settings Saved!
+                        </h3>
+                        
+                        <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '25px', lineHeight: '1.6' }}>
+                            Your homepage has been successfully updated with the new order and featured items.
+                        </p>
+
+                        <button 
+                            className="admin-btn admin-btn-primary" 
+                            onClick={() => setShowSuccess(false)}
+                            style={{ width: '100%', padding: '12px' }}
+                        >
+                            Awesome!
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

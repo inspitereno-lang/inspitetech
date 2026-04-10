@@ -6,7 +6,7 @@ const router = express.Router();
 // Get all destinations (Admin)
 router.get('/', async (req, res) => {
     try {
-        const destinations = await Destination.find().sort({ createdAt: -1 });
+        const destinations = await Destination.find().sort({ priority: 1, name: 1 });
         res.json(destinations);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -16,17 +16,17 @@ router.get('/', async (req, res) => {
 // Get only active destinations (Public Grid)
 router.get('/active', async (req, res) => {
     try {
-        const destinations = await Destination.find({ status: 'active' }).sort({ createdAt: -1 });
+        const destinations = await Destination.find({ status: 'active' }).sort({ priority: 1, name: 1 });
         res.json(destinations);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-// Get single destination by custom ID (Detail Page)
+// Get single destination by ID (Detail Page)
 router.get('/:id', async (req, res) => {
     try {
-        const destination = await Destination.findOne({ id: req.params.id });
+        const destination = await Destination.findById(req.params.id);
         if (!destination) return res.status(404).json({ message: 'Destination not found' });
         res.json(destination);
     } catch (error) {
@@ -49,8 +49,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { _id, __v, ...updateData } = req.body;
-        const updatedDestination = await Destination.findOneAndUpdate(
-            { id: req.params.id },
+        const updatedDestination = await Destination.findByIdAndUpdate(
+            req.params.id,
             updateData,
             { new: true, runValidators: true }
         );
@@ -63,7 +63,7 @@ router.put('/:id', async (req, res) => {
 // Delete a destination
 router.delete('/:id', async (req, res) => {
     try {
-        await Destination.findOneAndDelete({ id: req.params.id });
+        await Destination.findByIdAndDelete(req.params.id);
         res.json({ message: 'Destination deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });

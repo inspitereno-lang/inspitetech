@@ -6,7 +6,7 @@ const router = express.Router();
 // Get all packages (Admin)
 router.get('/', async (req, res) => {
     try {
-        const packages = await Package.find().sort({ createdAt: -1 });
+        const packages = await Package.find().sort({ priority: 1, title: 1 });
         res.json(packages);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 // Get only active packages (Public Grid)
 router.get('/active', async (req, res) => {
     try {
-        const packages = await Package.find({ status: 'active' }).sort({ createdAt: -1 });
+        const packages = await Package.find({ status: 'active' }).sort({ priority: 1, title: 1 });
         res.json(packages);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -26,7 +26,7 @@ router.get('/active', async (req, res) => {
 // Get single package by ID
 router.get('/:id', async (req, res) => {
     try {
-        const tourPackage = await Package.findOne({ id: req.params.id });
+        const tourPackage = await Package.findById(req.params.id);
         if (!tourPackage) return res.status(404).json({ message: 'Package not found' });
         res.json(tourPackage);
     } catch (error) {
@@ -47,8 +47,8 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const { _id, __v, ...updateData } = req.body;
-        const updatedPackage = await Package.findOneAndUpdate(
-            { id: req.params.id },
+        const updatedPackage = await Package.findByIdAndUpdate(
+            req.params.id,
             updateData,
             { new: true, runValidators: true }
         );
@@ -60,7 +60,7 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        await Package.findOneAndDelete({ id: req.params.id });
+        await Package.findByIdAndDelete(req.params.id);
         res.json({ message: 'Package deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });

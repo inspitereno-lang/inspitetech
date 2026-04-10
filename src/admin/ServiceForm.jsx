@@ -22,8 +22,27 @@ const ServiceForm = ({ item, onChange, onFileChange, uploading }) => {
         onChange({ target: { name: 'icon', value: icon } });
     };
 
+    const isVisaService = item._id === 'visa' || (item.title && item.title.toLowerCase().includes('visa'));
+
     return (
         <div className="admin-form-container">
+            {isVisaService && (
+                <div style={{ 
+                    background: '#fef2f2', 
+                    border: '1px solid #fee2e2', 
+                    padding: '12px', 
+                    borderRadius: '8px', 
+                    marginBottom: '20px',
+                    color: '#991b1b',
+                    fontSize: '0.88rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                }}>
+                    <i className="fas fa-circle-info" style={{ color: '#ef4444' }}></i>
+                    <span> This is a <strong>System Service</strong>. Deletion is protected because it manages the Country Visa Requirements section on the public site.</span>
+                </div>
+            )}
             <div className="admin-form-row">
                 <div className="admin-form-group">
                     <label>Service Title</label>
@@ -57,6 +76,17 @@ const ServiceForm = ({ item, onChange, onFileChange, uploading }) => {
                     />
                 </div>
                 <div className="admin-form-group">
+                    <label>Display Priority (Lower = First)</label>
+                    <input 
+                        type="number"
+                        className="admin-input"
+                        name="priority"
+                        value={item.priority || 0}
+                        onChange={onChange}
+                        placeholder="0"
+                    />
+                </div>
+                <div className="admin-form-group">
                     <label>Status</label>
                     <select 
                         className="admin-input"
@@ -74,10 +104,10 @@ const ServiceForm = ({ item, onChange, onFileChange, uploading }) => {
                 <label>Service Feature Image</label>
                 <div style={{ display: 'flex', gap: '15px', alignItems: 'center', marginBottom: '10px' }}>
                     <img 
-                        src={item.image} 
+                        src={item.image || 'https://placehold.co/120x70/e8ecf1/94a3b8?text=Placeholder'} 
                         alt="Preview" 
                         style={{ width: '120px', height: '70px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #ddd' }}
-                        onError={(e) => e.target.src='https://placehold.co/120x70/lightgray/gray?text=No+Img'}
+                        onError={(e) => e.target.src='https://placehold.co/120x70/e8ecf1/94a3b8?text=Placeholder'}
                     />
                     <input 
                         type="file" 
@@ -131,22 +161,6 @@ const ServiceForm = ({ item, onChange, onFileChange, uploading }) => {
                 </button>
             </div>
             
-            <div className="admin-form-group">
-                <label>Service ID / URL Slug</label>
-                <input 
-                    className="admin-input"
-                    name="id"
-                    value={item.id || ''}
-                    onChange={onChange}
-                    required
-                    placeholder="e.g. visa-assistance"
-                    disabled={item._id}
-                />
-                <small style={{ color: '#64748b', fontSize: '0.75rem', display: 'block', marginTop: '4px' }}>
-                    <i className="fas fa-magic" style={{ marginRight: '4px', color: '#ff8c00' }}></i>
-                    {item._id ? 'The slug is permanent once created.' : 'Auto-generated from title. Edit only if needed.'}
-                </small>
-            </div>
         </div>
     );
 };

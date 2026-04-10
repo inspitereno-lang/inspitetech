@@ -33,10 +33,8 @@ const Services = () => {
         const fetchServices = async () => {
             try {
                 const response = await api.get('/home/content');
-                if (response.data.services && response.data.services.length > 0) {
+                if (response.data.services) {
                     setServices(response.data.services);
-                } else {
-                    setServices(defaultServices);
                 }
                 setLoading(false);
             } catch (error) {
@@ -49,7 +47,8 @@ const Services = () => {
         AOS.init();
     }, []);
 
-    if (loading && services.length === 0) return null;
+    if (loading) return null;
+    if (services.length === 0) return null;
 
     return (
         <section className="section services" id="services">
@@ -78,7 +77,7 @@ const Services = () => {
                             </div>
                             <span>{service.title}</span>
                             <div className="service-hover-effect"></div>
-                            <Link to={service.id ? `/services/${service.id}` : "/services"} className="service-card-link" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 5 }} aria-label={service.title}></Link>
+                            <Link to={service._id ? `/services/${service._id}` : "/services"} className="service-card-link" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 5 }} aria-label={service.title}></Link>
                         </div>
                     ))}
                 </div>

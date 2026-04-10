@@ -7,7 +7,7 @@ const teamMemberSchema = new mongoose.Schema({
     bio: { type: String },
     expertise: { type: String },
     languages: [{ type: String }],
-    order: { type: Number, default: 0 },
+    priority: { type: Number, default: 0 },
     socialLinks: {
         facebook: { type: String },
         twitter: { type: String },

@@ -11,6 +11,9 @@ const AdminEditor = ({ type, title }) => {
     const [editingItem, setEditingItem] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     useEffect(() => {
         fetchData();
@@ -28,8 +31,6 @@ const AdminEditor = ({ type, title }) => {
         }
     };
 
-    const getItemId = (item) => item.id || item._id;
-
     const handleEdit = (item) => {
         setEditingItem({ ...item });
         setIsModalOpen(true);
@@ -39,7 +40,6 @@ const AdminEditor = ({ type, title }) => {
         let newItem = {};
         if (type === 'destinations') {
             newItem = {
-                id: '',
                 name: '',
                 country: '',
                 image: '',
@@ -50,7 +50,6 @@ const AdminEditor = ({ type, title }) => {
             };
         } else if (type === 'packages') {
             newItem = {
-                id: '',
                 title: '',
                 duration: '',
                 image: '',
@@ -63,7 +62,6 @@ const AdminEditor = ({ type, title }) => {
             };
         } else if (type === 'services') {
             newItem = {
-                id: '',
                 title: '',
                 subtitle: '',
                 image: '',
@@ -84,7 +82,6 @@ const AdminEditor = ({ type, title }) => {
             };
         } else {
             newItem = {
-                id: Date.now().toString(),
                 title: '',
                 name: '',
                 description: '',
@@ -101,35 +98,65 @@ const AdminEditor = ({ type, title }) => {
 
     const handleSave = async (e) => {
         if (e) e.preventDefault();
+        
+        // --- 1. Client Side Validation Check ---
+        const titleOrName = editingItem.title || editingItem.name;
+        const hasImage = editingItem.image || editingItem.img;
+        const hasDescription = editingItem.description || editingItem.content;
+
+        if (!titleOrName || !hasImage || !hasDescription) {
+            let missing = [];
+            if (!titleOrName) missing.push(type === 'destinations' || type === 'team' ? 'Name' : 'Title');
+            if (!hasImage) missing.push('Image');
+            if (!hasDescription) missing.push('Description');
+            
+            return alert(`Missing Required Fields: ${missing.join(', ')}. Please fill these out before saving.`);
+        }
+
         try {
             const isNew = !editingItem._id;
             
             if (isNew) {
                 await api.post(`/${type}`, editingItem);
             } else {
-                // Use _id for models that don't have a custom slug 'id'
-                const updateId = editingItem.id || editingItem._id;
-                await api.put(`/${type}/${updateId}`, editingItem);
+                await api.put(`/${type}/${editingItem._id}`, editingItem);
             }
             setIsModalOpen(false);
             setEditingItem(null);
             fetchData();
         } catch (error) {
             console.error(`Error saving ${type}:`, error);
-            const errorMessage = error.response?.data?.message || error.message || 'Failed to save changes.';
-            alert(`Error saving ${type}: ${errorMessage}`);
+            
+            // --- 2. Improved Server Error Reporting ---
+            const serverMessage = error.response?.data?.message || '';
+            const status = error.response?.status;
+            
+            if (status === 400) {
+                alert(`Validation Error: ${serverMessage || 'Please check that all fields are correct.'}`);
+            } else {
+                alert(`Error: ${serverMessage || 'Failed to save changes.'}`);
+            }
         }
     };
 
-    const handleDelete = async (item) => {
-        const id = getItemId(item);
-        if (window.confirm('Are you sure you want to delete this item?')) {
-            try {
-                await api.delete(`/${type}/${id}`);
-                fetchData();
-            } catch (error) {
-                console.error(`Error deleting ${type}:`, error);
-            }
+    const handleDeleteClick = (item) => {
+        setItemToDelete(item);
+    };
+
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
+        
+        try {
+            setIsDeleting(true);
+            await api.delete(`/${type}/${itemToDelete._id}`);
+            setItemToDelete(null);
+            setShowSuccessModal(true);
+            fetchData();
+        } catch (error) {
+            console.error(`Error deleting ${type}:`, error);
+            alert('Failed to delete item. Please try again.');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -155,31 +182,10 @@ const AdminEditor = ({ type, title }) => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        
-        setEditingItem(prev => {
-            const updated = { ...prev, [name]: value };
-            
-            // Auto-slugify for new items
-            if (!prev._id && (name === 'name' || name === 'title')) {
-                // If id is empty or was previously auto-generated from the old name/title
-                const oldSlug = slugify(prev.name || prev.title || '');
-                if (!prev.id || prev.id === oldSlug) {
-                    updated.id = slugify(value);
-                }
-            }
-            
-            return updated;
-        });
-    };
-
-    const slugify = (text) => {
-        return text
-            .toString()
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, '-')     // Replace spaces with -
-            .replace(/[^\w\-]+/g, '')  // Remove all non-word chars
-            .replace(/\-\-+/g, '-');   // Replace multiple - with single -
+        setEditingItem(prev => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
     if (loading) return <div className="admin-loading">Loading {title}...</div>;
@@ -188,10 +194,24 @@ const AdminEditor = ({ type, title }) => {
         <div className="admin-editor">
             <div className="admin-card">
                 <div className="admin-card-header">
-                    <h3>
-                        <i className="fas fa-list"></i>
-                        Manage {title}
-                    </h3>
+                    <div className="admin-card-header-main">
+                        <h3>
+                            <i className="fas fa-list"></i>
+                            Manage {title}
+                        </h3>
+                        {type === 'destinations' && (
+                            <p className="admin-header-help">Create and edit travel destinations that appear on the Destinations page. You can add highlights and specific gallery images.</p>
+                        )}
+                        {type === 'packages' && (
+                            <p className="admin-header-help">Configure travel packages with pricing, duration, and inclusions. Tag them appropriately for easy filtering.</p>
+                        )}
+                        {type === 'services' && (
+                            <p className="admin-header-help">Manage various travel services offered. You can set icons and detailed descriptions for each service.</p>
+                        )}
+                        {type === 'team' && (
+                            <p className="admin-header-help">Maintain your core team profiles. These appear in the About Us and Team sections.</p>
+                        )}
+                    </div>
                     <button className="admin-btn admin-btn-primary" onClick={handleAddNew}>
                         <i className="fas fa-plus"></i> Add New
                     </button>
@@ -209,6 +229,7 @@ const AdminEditor = ({ type, title }) => {
                                 <tr>
                                     <th>Photo</th>
                                     <th>{type === 'team' ? 'Name / Role' : 'Title / Name'}</th>
+                                    <th>Priority</th>
                                     {(type === 'destinations' || type === 'packages' || type === 'services') && <th>Status</th>}
                                     {type === 'packages' && <th>Duration</th>}
                                     {type === 'packages' && <th>Price</th>}
@@ -217,7 +238,7 @@ const AdminEditor = ({ type, title }) => {
                             </thead>
                             <tbody>
                                 {items.map((item) => (
-                                    <tr key={item._id || item.id}>
+                                    <tr key={item._id || item._id}>
                                         <td>
                                             <img 
                                                 src={item.image || item.img || item.photoUrl} 
@@ -231,6 +252,9 @@ const AdminEditor = ({ type, title }) => {
                                             <div style={{ fontSize: '0.78rem', color: '#94a3b8', marginTop: '2px' }}>
                                                 {(item.subtitle || item.categoryTag || item.tagline || item.country || item.role || item.location || '')}
                                             </div>
+                                        </td>
+                                        <td>
+                                            <span className="priority-badge">{item.priority || 0}</span>
                                         </td>
                                         {(type === 'destinations' || type === 'packages' || type === 'services') && (
                                             <td>
@@ -259,10 +283,10 @@ const AdminEditor = ({ type, title }) => {
                                                 </button>
                                                 <button 
                                                     className="admin-btn admin-btn-danger"
-                                                    onClick={() => handleDelete(item)}
-                                                    disabled={type === 'services' && item.id === 'visa'}
-                                                    title={type === 'services' && item.id === 'visa' ? "Global Visa Services cannot be deleted" : "Delete"}
-                                                    style={type === 'services' && item.id === 'visa' ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                                                    onClick={() => handleDeleteClick(item)}
+                                                    disabled={type === 'services' && (item._id === 'visa' || (item.title && item.title.toLowerCase().includes('visa')))}
+                                                    title={type === 'services' && (item._id === 'visa' || (item.title && item.title.toLowerCase().includes('visa'))) ? "System Service: This service manages Country Visa Requirements and cannot be deleted." : "Delete"}
+                                                    style={type === 'services' && (item._id === 'visa' || (item.title && item.title.toLowerCase().includes('visa'))) ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
                                                 >
                                                     <i className="fas fa-trash-can"></i> Delete
                                                 </button>
@@ -385,6 +409,109 @@ const AdminEditor = ({ type, title }) => {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {itemToDelete && (
+                <div className="admin-modal-overlay" onClick={() => setItemToDelete(null)}>
+                    <div className="admin-modal" style={{ maxWidth: '450px', width: '90%', animation: 'modalSlideIn 0.3s ease-out' }}>
+                        <div className="admin-modal-body" style={{ textAlign: 'center', padding: '40px 30px' }}>
+                            <div style={{ 
+                                width: '70px', 
+                                height: '70px', 
+                                background: '#fee2e2', 
+                                color: '#ef4444', 
+                                borderRadius: '50%', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                margin: '0 auto 20px',
+                                fontSize: '1.8rem'
+                            }}>
+                                <i className="fas fa-trash-can"></i>
+                            </div>
+                            
+                            <h3 style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '10px' }}>
+                                Confirm Deletion
+                            </h3>
+                            
+                            <p style={{ color: '#64748b', lineHeight: '1.6', fontSize: '0.95rem', marginBottom: '30px' }}>
+                                Are you sure you want to delete <strong style={{ color: '#1e293b' }}>"{itemToDelete.title || itemToDelete.name}"</strong>? 
+                                <br />
+                                <span style={{ color: '#f59e0b', fontSize: '0.82rem', fontWeight: '500' }}>
+                                    <i className="fas fa-triangle-exclamation" style={{ marginRight: '6px' }}></i>
+                                    This action cannot be undone.
+                                </span>
+                            </p>
+
+                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                                <button 
+                                    className="admin-btn admin-btn-secondary" 
+                                    onClick={() => setItemToDelete(null)}
+                                    disabled={isDeleting}
+                                    style={{ padding: '12px 24px', flex: 1 }}
+                                >
+                                    No, Keep it
+                                </button>
+                                <button 
+                                    className="admin-btn admin-btn-danger" 
+                                    onClick={confirmDelete}
+                                    disabled={isDeleting}
+                                    style={{ padding: '12px 24px', flex: 1 }}
+                                >
+                                    {isDeleting ? (
+                                        <><i className="fas fa-circle-notch fa-spin"></i> Deleting...</>
+                                    ) : (
+                                        'Yes, Delete It'
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Success Modal */}
+            {showSuccessModal && (
+                <div className="admin-modal-overlay" style={{ zIndex: 1100 }} onClick={() => setShowSuccessModal(false)}>
+                    <div className="admin-modal" style={{ 
+                        maxWidth: '400px', 
+                        width: '90%', 
+                        textAlign: 'center', 
+                        padding: '40px 30px',
+                        animation: 'modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                    }}>
+                        <div style={{ 
+                            width: '70px', 
+                            height: '70px', 
+                            background: '#dcfce7', 
+                            color: '#22c55e', 
+                            borderRadius: '20px', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            margin: '0 auto 20px',
+                            fontSize: '2rem'
+                        }}>
+                            <i className="fas fa-circle-check"></i>
+                        </div>
+                        
+                        <h3 style={{ fontSize: '1.25rem', color: '#1e293b', marginBottom: '10px' }}>
+                            Deletion Successful!
+                        </h3>
+                        
+                        <p style={{ color: '#64748b', fontSize: '0.95rem', marginBottom: '25px', lineHeight: '1.6' }}>
+                            The item has been permanently removed from the system.
+                        </p>
+ 
+                        <button 
+                            className="admin-btn admin-btn-primary" 
+                            onClick={() => setShowSuccessModal(false)}
+                            style={{ width: '100%', padding: '12px' }}
+                        >
+                            Got it!
+                        </button>
                     </div>
                 </div>
             )}
