@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
+import emailjs from '@emailjs/browser';
+import { useToast } from '../context/ToastContext';
 
 const Contact = () => {
+    const { toast } = useToast();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
         email: '',
         phone: '',
+        subject: 'general', // Added subject
         message: ''
     });
 
@@ -15,23 +19,44 @@ const Contact = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus('sending');
         
-        // Mocking form submission for now
-        setTimeout(() => {
-            console.log('Form submitted:', formData);
+        const templateParams = {
+            from_name: `${formData.firstName} ${formData.lastName}`,
+            from_email: formData.email,
+            phone: formData.phone,
+            subject: formData.subject,
+            message: formData.message,
+        };
+
+        try {
+            await emailjs.send(
+                import.meta.env.VITE_EMAILJS_SERVICE_ID,
+                import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+                templateParams,
+                import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+            );
+            
+            toast.success('Your message has been sent successfully. We will get back to you soon!', 'Message Sent');
             setStatus('success');
+            
             setFormData({
                 firstName: '',
                 lastName: '',
                 email: '',
                 phone: '',
+                subject: 'general',
                 message: ''
             });
+
             setTimeout(() => setStatus(''), 5000);
-        }, 1500);
+        } catch (error) {
+            console.error('EmailJS Error:', error);
+            toast.error('Failed to send message. Please check your connection and try again.', 'Send Failed');
+            setStatus('error');
+        }
     };
 
     return (
@@ -43,28 +68,47 @@ const Contact = () => {
                             <form id="contact-form" className="appointment-form" onSubmit={handleSubmit}>
                                 <div className="form-row">
                                     <div className="form-group" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
-                                        <input type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} required />
-                                        <div className="input-highlight"></div>
+                                        <label htmlFor="firstName" className="form-label">First Name</label>
+                                        <input type="text" name="firstName" id="firstName" className="form-control" value={formData.firstName} onChange={handleChange} required />
                                     </div>
                                     <div className="form-group" data-aos="fade-up" data-aos-duration="600" data-aos-delay="300">
-                                        <input type="text" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} required />
-                                        <div className="input-highlight"></div>
+                                        <label htmlFor="lastName" className="form-label">Last Name</label>
+                                        <input type="text" name="lastName" id="lastName" className="form-control" value={formData.lastName} onChange={handleChange} required />
                                     </div>
                                 </div>
 
                                 <div className="form-group" data-aos="fade-up" data-aos-duration="600" data-aos-delay="400">
-                                    <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} required />
-                                    <div className="input-highlight"></div>
+                                    <label htmlFor="email" className="form-label">Email Address</label>
+                                    <input type="email" name="email" id="email" className="form-control" value={formData.email} onChange={handleChange} required />
                                 </div>
 
                                 <div className="form-group" data-aos="fade-up" data-aos-duration="600" data-aos-delay="500">
-                                    <input type="tel" name="phone" placeholder="Phone Number (Optional)" value={formData.phone} onChange={handleChange} />
-                                    <div className="input-highlight"></div>
+                                    <label htmlFor="phone" className="form-label">Phone Number (Optional)</label>
+                                    <input type="tel" name="phone" id="phone" className="form-control" value={formData.phone} onChange={handleChange} />
+                                </div>
+
+                                <div className="form-group" data-aos="fade-up" data-aos-duration="600" data-aos-delay="550">
+                                    <label htmlFor="subject" className="form-label">Inquiry Type</label>
+                                    <select 
+                                        name="subject" 
+                                        id="subject"
+                                        className="form-control form-select"
+                                        style={{ width: '100%', padding: '12px 16px' }}
+                                        value={formData.subject}
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        <option value="general">General Inquiry</option>
+                                        <option value="booking">Flight Booking</option>
+                                        <option value="visa">Visa Assistance</option>
+                                        <option value="holiday">Holiday Package</option>
+                                        <option value="other">Other</option>
+                                    </select>
                                 </div>
 
                                 <div className="form-group" data-aos="fade-up" data-aos-duration="600" data-aos-delay="600">
-                                    <textarea name="message" rows="5" placeholder="How can we help you? Tell us about your travel needs or any questions you have..." value={formData.message} onChange={handleChange} required></textarea>
-                                    <div className="input-highlight"></div>
+                                    <label htmlFor="message" className="form-label">Your Message</label>
+                                    <textarea name="message" id="message" className="form-control" rows="5" value={formData.message} onChange={handleChange} required></textarea>
                                 </div>
 
                                 <button type="submit" className="submit-btn" data-aos="fade-up" data-aos-duration="600" data-aos-delay="700" disabled={status === 'sending'}>

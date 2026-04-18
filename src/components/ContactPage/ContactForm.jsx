@@ -21,10 +21,10 @@ const ContactForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Form Submitted:', formData);
-        
+
         // Show success toast
         setShowToast(true);
-        
+
         // Reset form
         setFormData({
             firstName: '',
@@ -46,24 +46,24 @@ const ContactForm = () => {
             <form id="contact-form" onSubmit={handleSubmit}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div className="form-group">
-                        <input 
-                            type="text" 
-                            id="firstName" 
-                            className="form-control" 
-                            placeholder=" " 
-                            required 
+                        <input
+                            type="text"
+                            id="firstName"
+                            className="form-control"
+                            placeholder=" "
+                            required
                             value={formData.firstName}
                             onChange={handleChange}
                         />
                         <label htmlFor="firstName" className="form-label">First Name</label>
                     </div>
                     <div className="form-group">
-                        <input 
-                            type="text" 
-                            id="lastName" 
-                            className="form-control" 
-                            placeholder=" " 
-                            required 
+                        <input
+                            type="text"
+                            id="lastName"
+                            className="form-control"
+                            placeholder=" "
+                            required
                             value={formData.lastName}
                             onChange={handleChange}
                         />
@@ -72,12 +72,12 @@ const ContactForm = () => {
                 </div>
 
                 <div className="form-group">
-                    <input 
-                        type="email" 
-                        id="email" 
-                        className="form-control" 
-                        placeholder=" " 
-                        required 
+                    <input
+                        type="email"
+                        id="email"
+                        className="form-control"
+                        placeholder=" "
+                        required
                         value={formData.email}
                         onChange={handleChange}
                     />
@@ -85,8 +85,8 @@ const ContactForm = () => {
                 </div>
 
                 <div className="form-group">
-                    <select 
-                        id="subject" 
+                    <select
+                        id="subject"
                         className="form-control form-select"
                         value={formData.subject}
                         onChange={handleChange}
@@ -100,10 +100,10 @@ const ContactForm = () => {
                 </div>
 
                 <div className="form-group">
-                    <textarea 
-                        id="message" 
-                        className="form-control" 
-                        placeholder=" " 
+                    <textarea
+                        id="message"
+                        className="form-control"
+                        placeholder=" "
                         required
                         value={formData.message}
                         onChange={handleChange}

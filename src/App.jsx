@@ -19,6 +19,8 @@ import PackagesPage from './components/PackagesPage';
 import PackageDetailsPage from './components/PackageDetailsPage';
 import TeamPage from './components/TeamPage';
 import ContactPage from './components/ContactPage';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsAndConditions from './components/TermsAndConditions';
 import Admin from './admin/Admin';
 import { ToastProvider } from './context/ToastContext';
 import { ToastContainer } from './components/Toast';
@@ -96,6 +98,8 @@ function App() {
                         <Route path="/packages/:slug" element={<PackageDetailsPage />} />
                         <Route path="/team" element={<TeamPage />} />
                         <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                        <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
                         <Route path="/admin/*" element={<Admin />} />
                         {/* Fallback to Home */}
                         <Route path="*" element={<HomePage />} />

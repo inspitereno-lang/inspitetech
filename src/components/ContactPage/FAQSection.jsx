@@ -31,19 +31,38 @@ const FAQSection = () => {
 
             <div className="faq-container">
                 {faqs.map((faq, index) => (
-                    <div 
-                        key={index} 
-                        className={`faq-item ${activeIndex === index ? 'active' : ''}`} 
-                        data-aos="fade-up" 
-                        data-aos-delay={100 * (index + 1)}
-                    >
-                        <div className="faq-question" onClick={() => setActiveIndex(activeIndex === index ? -1 : index)}>
-                            <span>{faq.question}</span>
-                            <div className="faq-icon"><i className="fas fa-chevron-down"></i></div>
+                    <div key={index} data-aos="fade-up" data-aos-delay={100 * (index + 1)}>
+                        <div className={`faq-item ${activeIndex === index ? 'active' : ''}`}>
+                            <div className="faq-question" onClick={() => setActiveIndex(activeIndex === index ? null : index)}>
+                                <span>{faq.question}</span>
+                            <div 
+                                className="faq-icon"
+                                style={{
+                                    background: activeIndex === index ? '#009af0' : '#f5f5f5', /* fallback colors if vars fail */
+                                    color: activeIndex === index ? 'white' : '#009af0',
+                                    transform: activeIndex === index ? 'rotate(180deg)' : 'rotate(0deg)',
+                                    transition: 'all 0.4s ease',
+                                    width: '32px',
+                                    height: '32px',
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.9rem'
+                                }}
+                            >
+                                <i className="fas fa-chevron-down"></i>
+                            </div>
                         </div>
-                        <div className="faq-answer">
-                            <p>{faq.answer}</p>
+                        <div className="faq-answer" style={{ 
+                            maxHeight: activeIndex === index ? '500px' : '0px',
+                            overflow: 'hidden',
+                            transition: 'all 0.4s ease-in-out',
+                            padding: activeIndex === index ? '0 24px 24px 24px' : '0 24px 0 24px',
+                        }}>
+                            <p style={{ margin: 0, padding: 0, color: '#666', lineHeight: 1.7 }}>{faq.answer}</p>
                         </div>
+                    </div>
                     </div>
                 ))}
             </div>

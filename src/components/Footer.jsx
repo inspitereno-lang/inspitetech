@@ -91,17 +91,14 @@ const Footer = () => {
                                 <li><Link to="/services">Global Visa Services</Link></li>
                                 <li><Link to="/services">Hotel Bookings</Link></li>
                                 <li><Link to="/packages">Holiday Packages</Link></li>
-                                <li><Link to="/services">Umrah Assistance</Link></li>
-                                <li><Link to="/services">Corporate Travel</Link></li>
                             </ul>
                         </div>
 
-                        {/* Legal & Support */}
                         <div className="footer-section">
                             <h4>Legal & Support</h4>
                             <ul>
-                                <li><a href="#">Privacy Policy</a></li>
-                                <li><a href="#">Terms and Conditions</a></li>
+                                <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+                                <li><Link to="/terms-and-conditions">Terms and Conditions</Link></li>
                             </ul>
                         </div>
 
